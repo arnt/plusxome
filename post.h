@@ -3,6 +3,7 @@
 #ifndef POST_H
 #define POST_H
 
+#include "base.h"
 #include "node.h"
 
 
@@ -12,7 +13,10 @@ public:
     
     const Node & rootNode() const;
 
-    static boost::shared_ptr<Post> find( const std::string & );
+    static shared_ptr<Post> find( const string & );
+    
+private:
+    shared_ptr<Node> root;
 };
 
 

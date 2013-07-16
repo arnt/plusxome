@@ -21,17 +21,13 @@ SinglePost::SinglePost()
 }
 
 
-/*!
-
-*/
-
-Rendering * SinglePost::render( const Path & path ) const
+Document SinglePost::produce( const Path & path ) const
 {
     shared_ptr<Post> post = Post::find( path.canonical() );
     if ( !post )
-	return next().render( path );
+	return Plugin::produce( path );
 
     Document result( t );
     result.node( "posting" ) = post->rootNode();
-    return new Rendering( result );
+    return result;
 }

@@ -3,20 +3,36 @@
 #include "path.h"
 
 
+/*! \class Path path.h
+  
+    The Path class models the local parts of URLs, as far as Plusxome
+    needs. This is just a series of strings separated by slashes.
+*/
 
-/*! Constructs a Path for \a s. */
+/*! Constructs an empty Path; the same as Path("/").
+*/
+
+Path::Path()
+{
+    
+}
+
+
+/*! Constructs a Path for \a s, which must already have been
+    URL-deescaped.
+*/
 
 Path::Path( const string & s )
 {
-    int i = 0;
+    unsigned int i = 0;
     while ( i < s.size() && s[i] != '?' ) {
 	while ( s[i] == '/' )
 	    ++i;
-	int cs = i;
+	unsigned int cs = i;
 	while ( i < s.size() && s[i] != '?' && s[i] != '/' )
 	    ++i;
 	if ( i > cs )
-	    parsed.push_back( unescaped( s.substr( cs, i-cs ) ) );
+	    parsed.push_back( s.substr( cs, i-cs ) );
     }
 }
 
@@ -32,7 +48,7 @@ Path::Path( const string & s )
 
 string Path::component( int n ) const
 {
-    if ( n >= parsed.size() )
+    if ( n >= (int)parsed.size() )
 	return "";
     return parsed[n];
 }

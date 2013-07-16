@@ -10,7 +10,7 @@ class SinglePost: public Plugin {
 public:
     SinglePost();
 
-    virtual Rendering * render( const Path & ) const;
+    virtual Document produce( const Path & ) const;
 
 private:
     Template t;

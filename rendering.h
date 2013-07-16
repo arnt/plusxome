@@ -4,11 +4,15 @@
 #define RENDERING_H
 
 #include "base.h"
+#include "document.h"
 
 
 class Rendering {
 public:
+    Rendering();
     Rendering( const Document & );
+
+    string httpResponse();
 };
 
 #endif

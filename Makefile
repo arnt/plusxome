@@ -3,9 +3,16 @@ CFLAGS += -O0 -I. -W -Wall -g -Wno-c++11-extensions -Wno-local-type-template-arg
 OPTIM =
 LD = clang
 LFLAGS = -g ;
-LIBS = -lstdc++ -lboost_filesystem -lboost_system -lboost_program_options -ltidy
+LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -ltidy
 
-OBJECTS=plusxome.o document.o plugins/singlepost.o
+OBJECTS=plusxome.o \
+	rendering.o \
+	document.o node.o \
+	path.o \
+	post.o \
+	httplistener.o httpserver.o \
+	plugin.o lastresort.o \
+	plugins/singlepost.o
 
 all: plusxome
 

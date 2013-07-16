@@ -16,6 +16,11 @@ using namespace boost::program_options;
 
 using namespace boost::filesystem;
 
+#include "config.h"
+
+string Config::singlePostTemplate;
+
+
 
 string postdir;
 string posttemplate;

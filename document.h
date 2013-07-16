@@ -16,7 +16,7 @@ public:
 
     Document & operator=( const Document & other );
 
-    Node & node( const string & ) const;
+    Node & node( const string & );
 
 private:
     void populateIdMap();

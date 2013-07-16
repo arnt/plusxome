@@ -6,7 +6,8 @@
 #include "base.h"
 
 
-struct Node {
+class Node {
+public:
     Node();
 
     enum Type { Root, Tag, Text, Junk };

@@ -18,17 +18,21 @@ public:
     Plugin();
     virtual ~Plugin();
 
-    virtual Rendering * render( const Path & ) const;
-    virtual void decorate( Rendering &, const Path & ) const;
+    virtual Rendering render( const Path & ) const;
+    virtual Document produce( const Path & ) const;
+    virtual void decorate( Document &, const Path & ) const;
 
-    virtual Rendering * render404( const Path & ) const;
+    virtual Document produce404( const Path & ) const;
 
 
-
+    
+    
+    static const Plugin & first() { return *firstPlugin; }
     const Plugin & next() const { return *nextPlugin; }
 
 private:
     Plugin * nextPlugin;
+    static Plugin * firstPlugin;
 };
 
 #endif

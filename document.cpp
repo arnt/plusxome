@@ -129,3 +129,13 @@ void Document::populateIdMap()
 	    ids[id] = current;
     }
 }
+
+
+/*! Returns a reference to the Node with ID \a id. If there is no such
+    node, a temporary invisible Node is returned.
+*/
+
+Node & Document::node( const string & id )
+{
+    return *(ids[id]);
+}
