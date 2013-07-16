@@ -9,6 +9,8 @@
 class Config {
 public:
     static std::string singlePostTemplate;
+    static std::string categoryTemplate;
+    static std::string homePageTemplate;
 };
 
 
