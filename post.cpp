@@ -2,6 +2,9 @@
 
 #include "post.h"
 
+#include "file.h"
+#include "document.h"
+
 static map<string,shared_ptr<Post> > posts;
 
 
@@ -41,11 +44,12 @@ shared_ptr<Post> Post::find( const std::string & path )
 }
 
 
-/*!
-
+/*! Reloads the Post from \a path, which must be the name of a file
+    (ie. including the trailing .post).
 */
 
-void Post::reload( const string & )
+void Post::reload( const string & path )
 {
-    
+    Document d( File( path ).contents() );
+    root = d.rootNode();
 }

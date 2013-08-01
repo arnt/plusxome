@@ -135,7 +135,7 @@ void Document::populateIdMap()
     node, a temporary invisible Node is returned.
 */
 
-Node & Document::node( const string & id )
+const Node & Document::node( const string & id )
 {
     return *(ids[id]);
 }
@@ -147,4 +147,12 @@ void Document::parse( const std::string & s )
 {
     root = fromHtml( s );
     ids.clear();
+}
+
+
+/*! Returns a reference to the root Node of the parsed document. */
+
+boost::shared_ptr<Node> Document::rootNode()
+{
+    return root;
 }
