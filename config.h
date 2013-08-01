@@ -11,6 +11,9 @@ public:
     static std::string singlePostTemplate;
     static std::string categoryTemplate;
     static std::string homePageTemplate;
+    
+    static std::string postDirectory;
+    static std::string assetDirectory;
 };
 
 

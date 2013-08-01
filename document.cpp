@@ -139,3 +139,12 @@ Node & Document::node( const string & id )
 {
     return *(ids[id]);
 }
+
+
+/*! Parses \a s as HTML and updates this Document to reflect \a s. */
+
+void Document::parse( const std::string & s )
+{
+    root = fromHtml( s );
+    ids.clear();
+}

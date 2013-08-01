@@ -18,6 +18,8 @@ public:
 
     Node & node( const string & );
 
+    void parse( const std::string & );
+
 private:
     void populateIdMap();
 

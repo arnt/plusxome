@@ -16,8 +16,6 @@
 #include <boost/thread/locks.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
-boost::shared_mutex renderlock;
-
 map<string,Rendering> renderings;
 
 
@@ -204,7 +202,7 @@ void HttpServer::respond()
 	return;
     }
 
-    boost::shared_lock<boost::shared_mutex> lock( renderlock );
+    boost::shared_lock<boost::shared_mutex> lock( Rendering::lock() );
     Rendering r;
     string canonicalPath = p.canonical();
     if ( renderings.count( canonicalPath ) ) {

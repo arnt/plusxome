@@ -8,10 +8,16 @@
 
 class Template: public Document {
 public:
-    Template( const std::string & s )
-	: Document( s ) {}
+    Template( const std::string & s );
+
+    void reload();
+
+    static Template & singlePostTemplate();
+    static Template & categoryTemplate();
+    static Template & homePageTemplate();
 
 private:
+    string filename;
 };
 
 

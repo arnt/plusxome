@@ -4,6 +4,9 @@
 
 Plugin * Plugin::firstPlugin = 0;
 
+#include <boost/algorithm/string.hpp>
+using namespace boost;
+
 
 /*! \class Plugin plugin.h
 
@@ -79,4 +82,61 @@ void Plugin::decorate( Document & document, const Path & path ) const
 Document Plugin::produce404( const Path & path ) const
 {
     return next().produce404( path );
+}
+
+
+static map<string, PluginRegistration *> * registered = 0;
+
+/*! Sets the list of active plugins to be that in \a plugins, which
+    must be a comma-separated string of valid names.
+*/
+
+void Plugin::setActivePlugins( const string & plugins )
+{
+    list<string> tokens;
+    split( tokens, plugins, is_any_of("," ) );
+    auto t = tokens.begin();
+    while ( t != tokens.end() ) {
+	string name = *t;
+	++t;
+	trim( name );
+	PluginRegistration * p = 0;
+	if ( registered )
+	    p = (*registered)[name];
+	if ( p )
+	    (void)(*p)();
+	else
+	    throw "Unknown plugin type: '" + name + "'";
+    }
+}
+
+
+/*! \class PluginRegistration plugin.h
+  
+    The PluginRegistration class is a helper to let plugins register
+    themselves. Each Plugin subclass can register its own name and let
+    Plugin create an instance by making a variable (static, in the
+    .cpp file) of type Registration<>,
+    e.g. Registration<SinglePost> in the case of SinglePost.
+*/
+
+/*! Registers a Plugin subtype as being named \a name.
+*/
+
+PluginRegistration::PluginRegistration( const string & name )
+{
+    if ( !registered )
+	registered = new map<string, PluginRegistration *>;
+    (*registered)[name] = this;
+}
+
+
+/*! This should never be called. It cannot work safely. What should it
+    do?
+ */
+
+PluginRegistration::~PluginRegistration()
+{
+    if ( registered )
+	registered->clear();
 }

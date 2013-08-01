@@ -7,11 +7,12 @@ LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program
 
 OBJECTS=plusxome.o \
 	rendering.o \
-	document.o node.o \
+	template.o document.o node.o \
 	path.o \
-	post.o \
+	post.o asset.o file.o \
 	httplistener.o httpserver.o \
 	plugin.o lastresort.o \
+	filewatcher.o \
 	plugins/singlepost.o
 
 all: plusxome

@@ -9,11 +9,13 @@
 
 class Post {
 public:
-    Post();
-    
+    Post( const string & );
+
     const Node & rootNode() const;
 
     static shared_ptr<Post> find( const string & );
+
+    void reload( const string & );
     
 private:
     shared_ptr<Node> root;

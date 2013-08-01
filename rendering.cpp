@@ -2,6 +2,7 @@
 
 #include "rendering.h"
 
+#include <boost/thread/locks.hpp>
 
 
 /*! \class Rendering rendering.h
@@ -39,4 +40,19 @@ Rendering::Rendering( const Document & document )
 string Rendering::httpResponse()
 {
     return "HTTP/1.1 200 OK\r\n\r\nYes!";
+}
+
+
+boost::shared_mutex renderlock;
+
+
+/*! Returns a reference to the giant rendering lock. FileWatcher needs
+   to grab that exclusively so it can delete items, HttpServer needs
+   to grab that in shared mode so it can trust that things aren't
+   deleted.
+*/
+
+boost::shared_mutex & Rendering::lock()
+{
+    return renderlock;
 }

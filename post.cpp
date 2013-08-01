@@ -11,18 +11,17 @@ static map<string,shared_ptr<Post> > posts;
     The Post class models a single .post file.
 */
 
-/*! Constructs an empty Post. This will likely become private... or?
+/*! Constructs a Post for \a path and records its existence so find()
+    will find the Post.
 */
 
-Post::Post()
+Post::Post( const string & path )
 {
-    
+    posts[path] = shared_ptr<Post>( this );
 }
 
 
-/*! Returns a reference to the root DOM node of this posting.
-
-*/
+/*! Returns a reference to the root DOM node of this posting. */
 
 const Node & Post::rootNode() const
 {
@@ -38,5 +37,15 @@ const Node & Post::rootNode() const
 
 shared_ptr<Post> Post::find( const std::string & path )
 {
-    return posts[path];
+    return posts[path]; // XXX is this correct?
+}
+
+
+/*!
+
+*/
+
+void Post::reload( const string & )
+{
+    
 }

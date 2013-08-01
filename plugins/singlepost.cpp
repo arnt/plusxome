@@ -4,6 +4,8 @@
 
 #include "template.h"
 
+Registration<SinglePost> r( "singlepost" );
+
 
 /*! \class Singlepost singlepost.h
 

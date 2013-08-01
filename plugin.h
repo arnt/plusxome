@@ -24,8 +24,7 @@ public:
 
     virtual Document produce404( const Path & ) const;
 
-
-    
+    static void setActivePlugins( const string & );
     
     static const Plugin & first() { return *firstPlugin; }
     const Plugin & next() const { return *nextPlugin; }
@@ -33,6 +32,28 @@ public:
 private:
     Plugin * nextPlugin;
     static Plugin * firstPlugin;
+};
+
+
+class PluginRegistration {
+protected:
+    PluginRegistration( const string & );
+public:
+    virtual ~PluginRegistration();
+    virtual Plugin * operator()() = 0;
+
+    
+private:
+    string name;
+};
+
+
+template<typename T>
+class Registration: public PluginRegistration {
+public:
+    Registration( const string & n ): PluginRegistration( n ) {}
+    virtual ~Registration() {}
+    virtual Plugin * operator()() { return new T; }
 };
 
 #endif

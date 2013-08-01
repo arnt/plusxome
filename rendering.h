@@ -13,6 +13,8 @@ public:
     Rendering( const Document & );
 
     string httpResponse();
+
+    static boost::shared_mutex & lock();
 };
 
 #endif
