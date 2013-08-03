@@ -32,9 +32,19 @@ Document::Document()
 }
 
 
+static string fromTidyValue( TidyDoc tdoc, TidyNode tidyNode ) {
+    TidyBuffer textBuffer;
+    (void)::tidyBufInit( &textBuffer );
+    (void)::tidyNodeGetValue( tdoc, tidyNode, &textBuffer );
+    string r( (const char *)textBuffer.bp, (size_t)textBuffer.size );
+    tidyBufFree( &textBuffer );
+    return r;
+}
+
+
 // this is a static private helper for the following constructor
 
-static shared_ptr<Node> fromTidyNode( TidyNode tidyNode ) {
+static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
     shared_ptr<Node> node( new Node );
     switch ( tidyNodeGetType( tidyNode ) ) {
     case TidyNode_Start:
@@ -44,7 +54,8 @@ static shared_ptr<Node> fromTidyNode( TidyNode tidyNode ) {
 	break;
     case TidyNode_Text:
 	node->t = Node::Text;
-	// xxx
+
+	node->text = fromTidyValue( tdoc, tidyNode );
 	break;
     case TidyNode_Root:
 	node->t = Node::Root;
@@ -57,7 +68,7 @@ static shared_ptr<Node> fromTidyNode( TidyNode tidyNode ) {
     }
     TidyNode child = tidyGetChild( tidyNode );
     while ( child ) {
-	boost::shared_ptr<Node> candidate( fromTidyNode( child ) );
+	boost::shared_ptr<Node> candidate( fromTidyNode( tdoc, child ) );
 	if ( candidate->t != Node::Junk )
 	    node->children.push_back( candidate );
 	child = tidyGetNext( child );
@@ -69,6 +80,8 @@ static shared_ptr<Node> fromTidyNode( TidyNode tidyNode ) {
 
 static shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
+    
+    // tidySetOutCharEncoding
 
     TidyBuffer errorBuffer;
     (void)::tidyBufInit( &errorBuffer );
@@ -76,7 +89,8 @@ static shared_ptr<Node> fromHtml( const std::string & html ) {
 
     (void)::tidyParseString( tdoc, html.c_str() );
     (void)::tidyCleanAndRepair( tdoc );
-    return fromTidyNode( ::tidyGetRoot( tdoc ) );
+    tidyBufFree( &errorBuffer );
+    return fromTidyNode( tdoc, ::tidyGetRoot( tdoc ) );
 }
 
 
