@@ -18,7 +18,7 @@ OBJECTS=plusxome.o \
 all: plusxome
 
 .cpp.o: Makefile
-	${CPP} -g -c -o $@ ${CFLAGS} $<
+	${CPP} -g -O0 -c -o $@ ${CFLAGS} $<
 
 plusxome: ${OBJECTS} Makefile
 	${CPP} -g -o plusxome -pthread ${OBJECTS} ${LIBS}

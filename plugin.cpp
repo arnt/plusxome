@@ -2,6 +2,8 @@
 
 #include "plugin.h"
 
+#include "lastresort.h"
+
 Plugin * Plugin::firstPlugin = 0;
 
 #include <boost/algorithm/string.hpp>
@@ -47,7 +49,7 @@ Plugin::~Plugin()
 
 Rendering Plugin::render( const Path & path ) const
 {
-    return next().produce( path );
+    return next().render( path );
 }
 
 
@@ -93,6 +95,7 @@ static map<string, PluginRegistration *> * registered = 0;
 
 void Plugin::setActivePlugins( const string & plugins )
 {
+    (void)new LastResort();
     list<string> tokens;
     split( tokens, plugins, is_any_of("," ) );
     auto t = tokens.begin();
@@ -112,7 +115,7 @@ void Plugin::setActivePlugins( const string & plugins )
 
 
 /*! \class PluginRegistration plugin.h
-  
+
     The PluginRegistration class is a helper to let plugins register
     themselves. Each Plugin subclass can register its own name and let
     Plugin create an instance by making a variable (static, in the

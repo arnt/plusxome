@@ -63,8 +63,8 @@ void FileWatcher::processPaths( const set<string> & paths )
     boost::unique_lock<boost::shared_mutex> lock(Rendering::lock());
 
     string postdir = Config::postDirectory;
-    unsigned int pds = postdir.size() + 1;
-    unsigned int ads = Config::assetDirectory.size() + 1;
+    unsigned int pds = postdir.size();
+    unsigned int ads = Config::assetDirectory.size();
 
     auto p = paths.begin();
     while ( p != paths.end() ) {

@@ -6,7 +6,7 @@
 
 
 /*! \class Rendering rendering.h
-  
+
     A Rendering object is anything that has been rendered for output
     via HTTP. Generally its source is a Document, but for non-HTML is
     can also be other things. I suspect a Sitemap plugin will produce
@@ -19,7 +19,7 @@
 
 Rendering::Rendering()
 {
-    
+
 }
 
 
@@ -27,9 +27,10 @@ Rendering::Rendering()
     how its metadata (cache lifetime above all) will be produced.
 */
 
-Rendering::Rendering( const Document & document )
+Rendering::Rendering( Document & document )
 {
-    
+    tmp = "<!doctype html>\n";
+    document.rootNode()->append( tmp );
 }
 
 
@@ -39,7 +40,7 @@ Rendering::Rendering( const Document & document )
 
 string Rendering::httpResponse()
 {
-    return "HTTP/1.1 200 OK\r\n\r\nYes!";
+    return "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n" + tmp;
 }
 
 

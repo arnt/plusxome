@@ -32,6 +32,8 @@ string basedir;
 string Config::postDirectory;
 string Config::assetDirectory;
 
+int port;
+
 
 int main( int argc, char ** argv ) {
     string config( "/etc/plusxome/config" );
@@ -39,12 +41,14 @@ int main( int argc, char ** argv ) {
     options_description cli( "Command-line options" );
     cli.add_options()
 	( "help,h", "produce help message" )
-	( "config,c", value<string>(&config)->default_value( "/etc/plusxome/plusxome.cf" ),
+	( "config,c", value<string>(&config)->default_value( "/etc/plusxome/config" ),
 	  "configuration file" )
 	( "version,v", "show Plusxome's version number" );
     options_description conf( "Configuration file (and command-line) options" );
 
     conf.add_options()
+	( "port,p", value<int>( &port )->default_value( 80 ),
+	  "TCP port to serve HTTP on" )
 	( "base-directory",
 	  value<string>( &basedir )->default_value( "/usr/local/blog" ),
 	  "base directory for postings" )
@@ -70,6 +74,8 @@ int main( int argc, char ** argv ) {
 
     variables_map vm;
     store( parse_command_line( argc, argv, cli ), vm );
+    ifstream cfs( config.c_str() );
+    store( parse_config_file( cfs, conf, false ), vm );
     notify( vm );
 
     if ( vm.count( "help" ) ) {
@@ -91,8 +97,8 @@ int main( int argc, char ** argv ) {
     ::chdir( basedir.c_str() );
 
     (void)new FileWatcher;
-    HttpListener v6( HttpListener::V6, 3080 );
-    HttpListener v4( HttpListener::V4, 3080 );
+    HttpListener v6( HttpListener::V6, port );
+    HttpListener v4( HttpListener::V4, port );
     while ( v4.valid() || v6.valid() ) {
 	::sleep( 5 );
     }

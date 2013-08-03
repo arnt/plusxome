@@ -16,7 +16,7 @@ public:
 
     Document & operator=( const Document & other );
 
-    const Node & node( const string & );
+    Node & node( const string & );
     boost::shared_ptr<Node> rootNode();
 
     void parse( const std::string & );

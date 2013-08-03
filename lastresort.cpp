@@ -10,8 +10,8 @@
     each particular plugin wants to override only one or two aspects
     of plugindom.
 
-    Plugin takes care of mixing the plugins' behaviour, and this takes
-    care of doing something when none of the "real" plugins do.
+    Plugin takes care of mixing the plugins' behaviour, and this class
+    takes care of doing something when none of the "real" plugins do.
 */
 
 LastResort::LastResort()

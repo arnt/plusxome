@@ -10,11 +10,14 @@
 class Rendering {
 public:
     Rendering();
-    Rendering( const Document & );
+    Rendering( Document & );
 
     string httpResponse();
 
     static boost::shared_mutex & lock();
+
+private:
+    string tmp;
 };
 
 #endif

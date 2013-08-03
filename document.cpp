@@ -4,6 +4,7 @@
 
 #include "tidy/tidy.h"
 #include "tidy/tidyenum.h"
+#include "tidy/buffio.h"
 
 #include "node.h"
 
@@ -68,6 +69,11 @@ static shared_ptr<Node> fromTidyNode( TidyNode tidyNode ) {
 
 static shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
+
+    TidyBuffer errorBuffer;
+    (void)::tidyBufInit( &errorBuffer );
+    (void)::tidySetErrorBuffer( tdoc, &errorBuffer );
+
     (void)::tidyParseString( tdoc, html.c_str() );
     (void)::tidyCleanAndRepair( tdoc );
     return fromTidyNode( ::tidyGetRoot( tdoc ) );
@@ -135,7 +141,7 @@ void Document::populateIdMap()
     node, a temporary invisible Node is returned.
 */
 
-const Node & Document::node( const string & id )
+Node & Document::node( const string & id )
 {
     return *(ids[id]);
 }
