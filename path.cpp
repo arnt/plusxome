@@ -4,7 +4,7 @@
 
 
 /*! \class Path path.h
-  
+
     The Path class models the local parts of URLs, as far as Plusxome
     needs. This is just a series of strings separated by slashes.
 */
@@ -13,8 +13,9 @@
 */
 
 Path::Path()
+    : trailingSlash( true )
 {
-    
+
 }
 
 
@@ -23,6 +24,7 @@ Path::Path()
 */
 
 Path::Path( const string & s )
+    : trailingSlash( false )
 {
     unsigned int i = 0;
     while ( i < s.size() && s[i] != '?' ) {
@@ -33,6 +35,8 @@ Path::Path( const string & s )
 	    ++i;
 	if ( i > cs )
 	    parsed.push_back( s.substr( cs, i-cs ) );
+	else if ( i >= s.size() || s[i] == '?' )
+	    trailingSlash = true;
     }
 }
 
@@ -66,5 +70,7 @@ string Path::canonical() const
 	r += "/";
 	r += *i; // escape something maybe?
     }
+    if ( trailingSlash )
+	r += "/";
     return r;
 }

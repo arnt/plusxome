@@ -18,6 +18,7 @@ public:
 
 private:
     std::vector<std::string> parsed;
+    bool trailingSlash;
 };
 
 #endif
