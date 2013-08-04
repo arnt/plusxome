@@ -69,6 +69,7 @@ string Path::canonical() const
     while ( i < parsed.end() ) {
 	r += "/";
 	r += *i; // escape something maybe?
+	++i;
     }
     if ( trailingSlash )
 	r += "/";
