@@ -21,12 +21,16 @@ public:
 
     void parse( const std::string & );
 
+    void setHttpResponseCode( int );
+    int httpResponseCode() const;
+
 private:
     void populateIdMap();
 
 private:
     boost::shared_ptr<Node> root;
     std::map<std::string,boost::shared_ptr<Node> > ids;
+    int responseCode;
 };
 
 #endif

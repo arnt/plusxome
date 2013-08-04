@@ -27,6 +27,7 @@ using boost::shared_ptr;
 */
 
 Document::Document()
+    : responseCode( 200 )
 {
 
 }
@@ -101,7 +102,7 @@ static shared_ptr<Node> fromHtml( const std::string & html ) {
 */
 
 Document::Document( const std::string & html )
-    : root( fromHtml( html ) )
+    : root( fromHtml( html ) ), responseCode( 200 )
 {
 }
 
@@ -175,4 +176,24 @@ void Document::parse( const std::string & s )
 boost::shared_ptr<Node> Document::rootNode()
 {
     return root;
+}
+
+
+/*! Records that this document's HTTP response code is \a code. The
+    value set at construction time is 200.
+*/
+
+void Document::setHttpResponseCode( int code )
+{
+    responseCode = code;
+}
+
+
+/*! Returns what was recorded by setHttpResponseCode(), or 200 if
+    setHttpResponseCode() has not been called.
+*/
+
+int Document::httpResponseCode() const
+{
+    return responseCode;
 }

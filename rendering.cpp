@@ -29,6 +29,7 @@ Rendering::Rendering()
 
 Rendering::Rendering( Document & document )
 {
+    responseCode = document.httpResponseCode();
     tmp = "<!doctype html>\n";
     document.rootNode()->append( tmp );
 }
@@ -40,7 +41,9 @@ Rendering::Rendering( Document & document )
 
 string Rendering::httpResponse()
 {
-    return "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\n" + tmp;
+    return "HTTP/1.1 " + 
+	boost::lexical_cast<string>( responseCode ) +
+	" Have a nice day\r\nConnection: close\r\n\r\n" + tmp;
 }
 
 
@@ -56,4 +59,24 @@ boost::shared_mutex renderlock;
 boost::shared_mutex & Rendering::lock()
 {
     return renderlock;
+}
+
+
+/*! Records that this rendering's HTTP response code is \a code. The
+    value set at construction time is 200.
+*/
+
+void Rendering::setHttpResponseCode( int code )
+{
+    responseCode = code;
+}
+
+
+/*! Returns what was recorded by setHttpResponseCode(), or 200 if
+    setHttpResponseCode() has not been called.
+*/
+
+int Rendering::httpResponseCode() const
+{
+    return responseCode;
 }

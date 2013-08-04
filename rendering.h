@@ -16,8 +16,12 @@ public:
 
     static boost::shared_mutex & lock();
 
+    void setHttpResponseCode( int );
+    int httpResponseCode() const;
+
 private:
     string tmp;
+    int responseCode;
 };
 
 #endif

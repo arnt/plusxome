@@ -54,8 +54,10 @@ void LastResort::decorate( Document &, const Path & ) const
 
 Document LastResort::produce404( const Path & path ) const
 {
-    return Document( "<html><body><h1>No such page</h1>\n<p>" +
-		     path.canonical() +
-		     " does not exist on this site. "
-		     "Very sorry about that.</html>" );
+    Document r( "<html><body><h1>No such page</h1>\n<p>" +
+		 path.canonical() +
+		 " does not exist on this site. "
+		"Very sorry about that.</html>" );
+    r.setHttpResponseCode( 404 );
+    return r;
 }
