@@ -43,6 +43,15 @@ static string fromTidyValue( TidyDoc tdoc, TidyNode tidyNode ) {
 }
 
 
+static void getTidyAttributes( Node & node, TidyNode tidyNode ) {
+    TidyAttr a = ::tidyAttrFirst( tidyNode );
+    while ( a ) {
+	node.attributes[::tidyAttrName( a )] = ::tidyAttrValue( a );
+	a = ::tidyAttrNext( a );
+    }
+}
+
+
 // this is a static private helper for the following constructor
 
 static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
@@ -51,7 +60,7 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
     case TidyNode_Start:
 	node->t = Node::Tag;
 	node->tagName = tidyNodeGetName( tidyNode );
-	// todo: also attributes
+	getTidyAttributes( *node, tidyNode );
 	break;
     case TidyNode_Text:
 	node->t = Node::Text;
@@ -82,8 +91,10 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
 static shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
     
-    // tidySetOutCharEncoding
+    // don't let tidy generate any meta generator tag
+    ::tidyOptSetBool( tdoc, TidyMark, no );
 
+    // don't let tidy report any errors (at all!)
     TidyBuffer errorBuffer;
     (void)::tidyBufInit( &errorBuffer );
     (void)::tidySetErrorBuffer( tdoc, &errorBuffer );
