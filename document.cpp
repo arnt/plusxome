@@ -208,3 +208,27 @@ int Document::httpResponseCode() const
 {
     return responseCode;
 }
+
+
+static void addElementsByTag( boost::shared_ptr<Node> node,
+			      const string & name, 
+			      list<boost::shared_ptr<Node> > & r ) {
+    if ( name == (*node).tagName )
+	r.push_back( node );
+    auto c = (*node).children.begin();
+    while ( c != (*node).children.end() ) {
+	addElementsByTag( *c, name, r );
+	++c;
+    }
+}
+
+
+/*! Returns a list of the nodes named \a name.
+*/
+
+list<boost::shared_ptr<Node> > Document::getElementsByTag( const string & name )
+{
+    std::list<boost::shared_ptr<Node> > r;
+    addElementsByTag( root, name, r );
+    return r;
+}

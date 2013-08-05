@@ -24,6 +24,8 @@ public:
     void setHttpResponseCode( int );
     int httpResponseCode() const;
 
+    std::list<boost::shared_ptr<Node> > getElementsByTag( const string & );
+
 private:
     void populateIdMap();
 
