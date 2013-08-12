@@ -24,8 +24,12 @@ public:
 
     virtual Document produce404( const Path & ) const;
 
+    virtual void setup();
+    static void setupPlugins();
+
     static void setActivePlugins( const string & );
-    
+    static options_description pluginOptions();
+
     static const Plugin & first() { return *firstPlugin; }
     const Plugin & next() const { return *nextPlugin; }
 
@@ -42,7 +46,8 @@ public:
     virtual ~PluginRegistration();
     virtual Plugin * operator()() = 0;
 
-    
+    virtual options_description options() = 0;
+
 private:
     string name;
 };
@@ -54,6 +59,7 @@ public:
     Registration( const string & n ): PluginRegistration( n ) {}
     virtual ~Registration() {}
     virtual Plugin * operator()() { return new T; }
+    virtual options_description options() { return T::options(); }
 };
 
 #endif

@@ -6,6 +6,8 @@
 #include "file.h"
 
 
+static map<string, Template *> templates;
+
 
 /*! \class Template template.h
 
@@ -20,7 +22,7 @@
 Template::Template( const std::string & s )
     : Document( File( s ).contents() ), filename( s )
 {
-    // nothing needed
+    templates[s] = this;
 }
 
 
@@ -34,38 +36,11 @@ void Template::reload()
 }
 
 
-static Template * spt = 0;
+/*! Returns a pointer to the Template constructed from a filename, or
+    a null pointer if there is no such template.
+*/
 
-/*! Returns a reference to the Template for single-post pages. */
-
-Template & Template::singlePostTemplate()
+Template * Template::find( const string & filename )
 {
-    if ( !spt )
-	spt = new Template( Config::singlePostTemplate );
-    return *spt;
-}
-
-
-static Template * ct = 0;
-
-/*! Returns a reference to the Template for category pages. */
-
-Template & Template::categoryTemplate()
-{
-    if ( !ct )
-	ct = new Template( Config::singlePostTemplate );
-    return *ct;
-    
-}
-
-
-static Template * hpt = 0;
-
-/*! Returns a reference to the Template for the blog's home page. */
-
-Template & Template::homePageTemplate()
-{
-    if ( !hpt )
-	hpt = new Template( Config::singlePostTemplate );
-    return *hpt;
+    return templates[filename];
 }

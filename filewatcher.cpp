@@ -50,11 +50,11 @@ FileWatcher::FileWatcher()
 
 void FileWatcher::start()
 {
-    
+
 }
 
 
-/*! 
+/*!
 
 */
 
@@ -87,12 +87,10 @@ void FileWatcher::processPaths( const set<string> & paths )
 		asset->reload( *p );
 	    else
 		(new Asset( path ))->reload( *p );
-	} else if ( *p == Config::singlePostTemplate ) {
-	    Template::singlePostTemplate().reload();
-	} else if ( *p == Config::categoryTemplate ) {
-	    Template::categoryTemplate().reload();
-	} else if ( *p == Config::homePageTemplate ) {
-	    Template::homePageTemplate().reload();
+	} else {
+	    Template * t = Template::find( *p );
+	    if ( t )
+		t->reload();
 	}
 	++p;
     }

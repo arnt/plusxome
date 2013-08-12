@@ -13,11 +13,17 @@
 
 using namespace std;
 
+
 #include <boost/lexical_cast.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/thread/shared_mutex.hpp>
 
-using boost::shared_ptr; // std:: in c++11, but not in ubuntu 12.04 yet
+using namespace boost;
+
+
+#include <boost/program_options.hpp>
+
+using namespace boost::program_options;
 
 
 #endif

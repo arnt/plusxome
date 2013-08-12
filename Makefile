@@ -9,11 +9,13 @@ OBJECTS=plusxome.o \
 	rendering.o \
 	template.o document.o node.o \
 	path.o \
+	tag.o \
 	post.o asset.o file.o \
 	httplistener.o httpserver.o \
 	plugin.o lastresort.o \
 	filewatcher.o \
-	plugins/singlepost.o
+	plugins/singlepost.o \
+	plugins/homepage.o
 
 all: plusxome
 

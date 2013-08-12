@@ -75,3 +75,14 @@ string Path::canonical() const
 	r += "/";
     return r;
 }
+
+
+/*! Returns the number of path components, which is 0 for /, i for
+    /foo, 1 for /foo/ and 2 of /arnt/razor-blades.
+*/
+
+int Path::components() const
+{
+    return parsed.size();
+
+}

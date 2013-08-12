@@ -18,6 +18,7 @@
 */
 
 Rendering::Rendering()
+    : responseCode( 200 )
 {
 
 }

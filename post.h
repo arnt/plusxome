@@ -14,11 +14,20 @@ public:
     const Node & rootNode() const;
 
     static shared_ptr<Post> find( const string & );
+    static vector< shared_ptr<Post> > all();
 
     void reload( const string & );
-    
+
+    void setTags( const string & );
+    void setDate( const string & );
+
+    bool tagged( const string & ) const;
+
+    int date() const;
+
 private:
     shared_ptr<Node> root;
+    set<string> tags;
 };
 
 

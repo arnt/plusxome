@@ -16,22 +16,22 @@ public:
 
     Document & operator=( const Document & other );
 
-    Node & node( const string & );
-    boost::shared_ptr<Node> rootNode();
+    shared_ptr<Node> node( const string & );
+    shared_ptr<Node> rootNode();
 
     void parse( const std::string & );
 
     void setHttpResponseCode( int );
     int httpResponseCode() const;
 
-    std::list<boost::shared_ptr<Node> > getElementsByTag( const string & );
+    list< shared_ptr<Node> > getElementsByTag( const string & );
 
 private:
     void populateIdMap();
 
 private:
-    boost::shared_ptr<Node> root;
-    std::map<std::string,boost::shared_ptr<Node> > ids;
+    shared_ptr<Node> root;
+    map<string,shared_ptr<Node> > ids;
     int responseCode;
 };
 

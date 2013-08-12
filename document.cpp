@@ -78,7 +78,7 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
     }
     TidyNode child = tidyGetChild( tidyNode );
     while ( child ) {
-	boost::shared_ptr<Node> candidate( fromTidyNode( tdoc, child ) );
+	shared_ptr<Node> candidate( fromTidyNode( tdoc, child ) );
 	if ( candidate->t != Node::Junk )
 	    node->children.push_back( candidate );
 	child = tidyGetNext( child );
@@ -90,7 +90,7 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
 
 static shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
-    
+
     // don't let tidy generate any meta generator tag
     ::tidyOptSetBool( tdoc, TidyMark, no );
 
@@ -167,9 +167,11 @@ void Document::populateIdMap()
     node, a temporary invisible Node is returned.
 */
 
-Node & Document::node( const string & id )
+shared_ptr<Node> Document::node( const string & id )
 {
-    return *(ids[id]);
+    if ( ids.empty() )
+	populateIdMap();
+    return ids[id];
 }
 
 
@@ -184,7 +186,7 @@ void Document::parse( const std::string & s )
 
 /*! Returns a reference to the root Node of the parsed document. */
 
-boost::shared_ptr<Node> Document::rootNode()
+shared_ptr<Node> Document::rootNode()
 {
     return root;
 }
@@ -210,9 +212,9 @@ int Document::httpResponseCode() const
 }
 
 
-static void addElementsByTag( boost::shared_ptr<Node> node,
-			      const string & name, 
-			      list<boost::shared_ptr<Node> > & r ) {
+static void addElementsByTag( shared_ptr<Node> node,
+			      const string & name,
+			      list<shared_ptr<Node> > & r ) {
     if ( name == (*node).tagName )
 	r.push_back( node );
     auto c = (*node).children.begin();
@@ -226,9 +228,9 @@ static void addElementsByTag( boost::shared_ptr<Node> node,
 /*! Returns a list of the nodes named \a name.
 */
 
-list<boost::shared_ptr<Node> > Document::getElementsByTag( const string & name )
+list<shared_ptr<Node> > Document::getElementsByTag( const string & name )
 {
-    std::list<boost::shared_ptr<Node> > r;
+    list<shared_ptr<Node> > r;
     addElementsByTag( root, name, r );
     return r;
 }

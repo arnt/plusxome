@@ -12,9 +12,7 @@ public:
 
     void reload();
 
-    static Template & singlePostTemplate();
-    static Template & categoryTemplate();
-    static Template & homePageTemplate();
+    static Template * find( const string & );
 
 private:
     string filename;

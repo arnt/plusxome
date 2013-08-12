@@ -143,3 +143,43 @@ PluginRegistration::~PluginRegistration()
     if ( registered )
 	registered->clear();
 }
+
+
+/*! This function is called after Plusxome has read its configuration
+    and all plugins are enabled, but before the first HTTP request has
+    been served.
+*/
+
+void Plugin::setup()
+{
+}
+
+
+/*! Calls setup() on all active plugins.
+*/
+
+void Plugin::setupPlugins()
+{
+    Plugin * p = firstPlugin;
+    while ( p ) {
+	p->setup();
+	p = p->nextPlugin;
+    }
+}
+
+
+/*! 
+
+*/
+
+options_description Plugin::pluginOptions()
+{
+    // static map<string, PluginRegistration *> * registered = 0;
+    auto r = registered->begin();
+    options_description cf;
+    while ( r != registered->end() ) {
+	cf.add( r->second->options() );
+	++r;
+    }
+    return cf;
+}

@@ -9,12 +9,7 @@
 #include <iostream>
 #include <fstream>
 
-using namespace std;
-
-#include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
-
-using namespace boost::program_options;
 
 #include <boost/filesystem.hpp>
 
@@ -22,7 +17,6 @@ using namespace boost::filesystem;
 
 #include "config.h"
 
-string Config::singlePostTemplate;
 string Config::categoryTemplate;
 string Config::homePageTemplate;
 
@@ -58,25 +52,20 @@ int main( int argc, char ** argv ) {
 	( "asset-directory",
 	  value<string>( &Config::assetDirectory )->default_value( "assets" ),
 	  "base directory for assets (relative to base-directory)" )
-	( "post-template",
-	  value<string>( &Config::singlePostTemplate )->default_value( "post.template" ),
-	  "post template file name" )
-	( "category-template",
-	  value<string>( &Config::categoryTemplate )->default_value( "tag.template" ),
-	  "category page template file name" )
-	( "home-template",
-	  value<string>( &Config::homePageTemplate )->default_value( "home.template" ),
-	  "home page template file name" )
 	( "plugins",
-	  value<string>( &activePlugins )->default_value( "singlepost" ),
+	  value<string>( &activePlugins )->default_value( "singlepost, homepage" ),
 	  "active plugins (comma-separated)" );
+    conf.add( Plugin::pluginOptions() );
     cli.add( conf );
 
     variables_map vm;
     store( parse_command_line( argc, argv, cli ), vm );
+
     ifstream cfs( config.c_str() );
-    store( parse_config_file( cfs, conf, false ), vm );
+    store( parse_config_file( cfs, conf, true ), vm );
     notify( vm );
+    ::chdir( basedir.c_str() );
+    Plugin::setActivePlugins( activePlugins );
 
     if ( vm.count( "help" ) ) {
 	cout << "Plusxome serves thoughtful writings to the world." << endl
@@ -92,11 +81,9 @@ int main( int argc, char ** argv ) {
 	exit( 0 );
     }
 
-    Plugin::setActivePlugins( activePlugins );
-
-    ::chdir( basedir.c_str() );
 
     (void)new FileWatcher;
+    Plugin::setupPlugins();
     HttpListener v6( HttpListener::V6, port );
     HttpListener v4( HttpListener::V4, port );
     while ( v4.valid() || v6.valid() ) {

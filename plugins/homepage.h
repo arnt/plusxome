@@ -1,14 +1,14 @@
 // Copyright Arnt Gulbrandsen, arnt@gulbrandsen.priv.no.
 
-#ifndef SINGLEPOST_H
-#define SINGLEPOST_H
+#ifndef HOMEPAGE_H
+#define HOMEPAGE_H
 
 #include "plugin.h"
 
 
-class SinglePost: public Plugin {
+class HomePage: public Plugin {
 public:
-    SinglePost();
+    HomePage();
 
     Document produce( const Path & ) const;
 

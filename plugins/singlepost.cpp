@@ -3,8 +3,11 @@
 #include "singlepost.h"
 
 #include "template.h"
+#include <boost/program_options.hpp>
 
-Registration<SinglePost> r( "singlepost" );
+static Registration<SinglePost> r( "singlepost" );
+
+static string tn;
 
 
 /*! \class Singlepost singlepost.h
@@ -16,10 +19,8 @@ Registration<SinglePost> r( "singlepost" );
 /*! Constructs a SinglePost plugin and checks the configuration. */
 
 SinglePost::SinglePost()
-    : Plugin(), t( Config::singlePostTemplate )
+    : Plugin(), t( 0 )
 {
-    // TODO: check config
-    // Specifically, this nededs to make the template
 }
 
 
@@ -29,7 +30,29 @@ Document SinglePost::produce( const Path & path ) const
     if ( !post )
 	return Plugin::produce( path );
 
-    Document result( t );
-    result.node( "posting" ) = post->rootNode();
+    Document result( *t );
+    *(result.node( "posting" )) = post->rootNode();
     return result;
+}
+
+
+/*! This reimplementation enables post.template. */
+
+void SinglePost::setup()
+{
+    t = new Template( tn );
+}
+
+
+options_description SinglePost::options()
+{
+    options_description conf( "Configuration file options for "
+			      "the singlepost plugin" );
+
+    conf.add_options()
+	( "post-template",
+	  value<string>( &tn )->default_value( "post.template" ),
+	  "post template file name" );
+
+    return conf;
 }
