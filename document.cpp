@@ -156,9 +156,11 @@ void Document::populateIdMap()
 	    ++child;
 	}
 
-	string id = current->attributes["id"];
-	if ( !id.empty() && !ids.count( id ) )
-	    ids[id] = current;
+	if ( current->attributes.find( "id" ) != current->attributes.end() ) {
+	    string id = current->attributes["id"];
+	    if ( !id.empty() && !ids.count( id ) )
+		ids[id] = current;
+	}
     }
 }
 
