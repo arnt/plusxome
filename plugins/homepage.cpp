@@ -39,12 +39,12 @@ Document HomePage::produce( const Path & path ) const
     int n = 0;
     shared_ptr<Node> parent = result.node( "postings" );
     if ( parent ) {
-    while ( p != posts.end() && n < postings ) {
-	shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
-	parent->children.push_back( r );
-	++p;
-	++n;
-    }
+	while ( p != posts.end() && n < postings ) {
+	    shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
+	    parent->children.push_back( r );
+	    ++p;
+	    ++n;
+	}
     }
     return result;
 }
