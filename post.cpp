@@ -91,7 +91,8 @@ void Post::reload( const string & path )
 	i++;
     }
 
-    html += contents.substr( i );
+    if ( i < contents.size() )
+	html += contents.substr( i );
     root = Document( html ).getElementsByTag( "body" ).front();
     root->tagName = "article";
 }
