@@ -8,6 +8,12 @@
 #include "asset.h"
 #include "post.h"
 
+#include <sys/inotify.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include "boost/filesystem.hpp"
 #include <boost/thread.hpp>
 #include <boost/thread/locks.hpp>
@@ -25,10 +31,33 @@
 */
 
 FileWatcher::FileWatcher()
+    : fd( 0 )
 {
     boost::thread( *this );
     // when run() exits the object will be deallocated.
+}
 
+
+/*! This private helper adds an inotify watch for \a path. */
+
+void FileWatcher::addWatch( const string & path )
+{
+    int n = ::inotify_add_watch( fd, path.c_str(),
+				 IN_CLOSE_WRITE |
+				 IN_CREATE |
+				 IN_DELETE |
+				 IN_MOVED_FROM |
+				 IN_MOVED_TO );
+    watches[n] = path;
+}
+
+
+/*! Scans the entire subtree once and calls processPaths() for all
+    files and directories; this is for startup.
+*/
+
+void FileWatcher::scanOnce()
+{
     boost::filesystem::recursive_directory_iterator end;
     boost::filesystem::recursive_directory_iterator dir("./");
     set<string> paths;
@@ -44,18 +73,52 @@ FileWatcher::FileWatcher()
 }
 
 
-/*!
-
+/*! Loops forever around inotify(), calling processPaths() whenever a
+    file has changed.
 */
 
 void FileWatcher::start()
 {
+    fd = ::inotify_init();
+    addWatch( Config::postDirectory );
 
+    scanOnce();
+
+    while ( true ) {
+	set<string> paths;
+	char buffer[32768];
+	bool done = false;
+	while ( !done ) {
+	    int r = ::read( fd, buffer, 32767 );
+	    int o = 0;
+	    while ( o < r ) {
+		struct inotify_event e;
+		::memmove( &e, buffer + o, sizeof(inotify_event) );
+		o += sizeof(inotify_event);
+		if ( e.len > 0 ) {
+		    // filename does not get the trailing null or nulls
+		    string dirname = watches[e.wd];
+		    // it needs to get the path, though
+		    string filename( buffer + o );
+		    if ( !dirname.empty() )
+			filename = dirname + "/" + filename;
+		    paths.insert( filename );
+		    // but we skip the nulls before processing the next event
+		    o += e.len;
+		} 
+	    }
+	    int more = 0;
+	    r = ioctl( fd, FIONREAD, &more );
+	    if ( r >= 0 && more == 0 )
+		done = true;
+	}
+	processPaths( paths );
+    }
 }
 
 
-/*!
-
+/*! Consider each filename in \a paths and update Plusxome's Post,
+    Asset and Template sets.
 */
 
 void FileWatcher::processPaths( const set<string> & paths )
@@ -68,7 +131,11 @@ void FileWatcher::processPaths( const set<string> & paths )
 
     auto p = paths.begin();
     while ( p != paths.end() ) {
-	if ( p->size() > pds + 1 + 5 &&
+	struct stat st;
+        (void)::stat( p->c_str(), &st );
+	if ( S_ISDIR( st.st_mode ) ) {
+	    addWatch( *p );
+	} else if ( p->size() > pds + 1 + 5 &&
 	     (*p)[pds] == '/' &&
 	     p->substr(0, pds) == postdir &&
 	     p->substr(p->size() - 5) == ".post" ) {

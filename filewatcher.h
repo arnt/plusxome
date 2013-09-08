@@ -15,6 +15,14 @@ public:
     void start();
 
     void processPaths( const set<string> & );
+    
+private:
+    void addWatch( const string & );
+    void scanOnce();
+
+private:
+    int fd;
+    map<int, string> watches;
 };
 
 #endif
