@@ -58,6 +58,7 @@ string Rendering::httpResponse()
 	boost::lexical_cast<string>( responseCode ) +
 	" Have a nice day\r\n"
 	"Content-Type: " + ctype + "\r\n"
+	"Server: Plusxome/0.1 (http://rant.gulbrandsen.priv.no/plusxome)\r\n"
 	"Connection: close\r\n"
 	"\r\n" + tmp;
 }
