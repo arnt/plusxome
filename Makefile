@@ -14,6 +14,7 @@ OBJECTS=plusxome.o \
 	httplistener.o httpserver.o \
 	plugin.o lastresort.o \
 	filewatcher.o \
+	plugins/robotstxt.o \
 	plugins/singlepost.o \
 	plugins/homepage.o
 

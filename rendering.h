@@ -11,6 +11,7 @@ class Rendering {
 public:
     Rendering();
     Rendering( Document & );
+    Rendering( const string &, const string & );
 
     string httpResponse();
 
@@ -22,6 +23,7 @@ public:
 private:
     string tmp;
     int responseCode;
+    string ctype;
 };
 
 #endif

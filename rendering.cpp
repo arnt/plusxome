@@ -32,7 +32,19 @@ Rendering::Rendering( Document & document )
 {
     responseCode = document.httpResponseCode();
     tmp = "<!doctype html>\n";
+    ctype = "text/html";
     document.rootNode()->append( tmp );
+}
+
+
+/*! Constructs a Rendering that returns \a content with \a contentType.
+*/
+
+Rendering::Rendering( const string & content, const string & contentType )
+{
+    responseCode = 200;
+    tmp = content;
+    ctype = contentType;
 }
 
 
@@ -42,9 +54,12 @@ Rendering::Rendering( Document & document )
 
 string Rendering::httpResponse()
 {
-    return "HTTP/1.1 " + 
+    return "HTTP/1.1 " +
 	boost::lexical_cast<string>( responseCode ) +
-	" Have a nice day\r\nConnection: close\r\n\r\n" + tmp;
+	" Have a nice day\r\n"
+	"Content-Type: " + ctype + "\r\n"
+	"Connection: close\r\n"
+	"\r\n" + tmp;
 }
 
 
