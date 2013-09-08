@@ -23,7 +23,7 @@ static map<string,shared_ptr<Post> > posts;
 
 Post::Post( const string & path )
 {
-    posts[path] = shared_ptr<Post>( this );
+    posts["/" + path] = shared_ptr<Post>( this );
 }
 
 
