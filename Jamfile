@@ -1,0 +1,15 @@
+SubDir TOP ;
+
+HDRS += [ FDirName $(TOP) ] ;
+
+SubInclude TOP plugins ;
+
+Build plusxome : plusxome.cpp rendering.cpp template.cpp document.cpp
+	node.cpp path.cpp tag.cpp post.cpp asset.cpp file.cpp
+	httplistener.cpp httpserver.cpp plugin.cpp lastresort.cpp
+	filewatcher.cpp ;
+
+Program plusxome : plusxome plugins ;
+
+LINKLIBS on plusxome = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
+
