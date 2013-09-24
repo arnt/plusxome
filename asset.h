@@ -10,10 +10,10 @@ class Asset {
 public:
     Asset( const string & );
 
-    static shared_ptr<Asset> find( const string & );
+    static std::shared_ptr<Asset> find( const string & );
 
     void reload( const string & );
-    
+
 private:
     string c;
 };

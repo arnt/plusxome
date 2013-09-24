@@ -4,11 +4,11 @@
 
 #include "file.h"
 
-static map<string,shared_ptr<Asset> > assets;
+static map<string,std::shared_ptr<Asset> > assets;
 
 
 /*! \class Asset asset.h
-  
+
     The Asset class provides binary assets; files that can be served
     as-is. Typically used only for graphics and CSS.
 */
@@ -18,7 +18,7 @@ static map<string,shared_ptr<Asset> > assets;
 
 Asset::Asset( const string & path )
 {
-    assets[path] = shared_ptr<Asset>( this );
+    assets[path] = std::shared_ptr<Asset>( this );
 }
 
 
@@ -35,7 +35,9 @@ void Asset::reload( const string & file )
     Returns what exactly if there is no such Asset?
 */
 
-shared_ptr<Asset> Asset::find( const string & path )
+std::shared_ptr<Asset> Asset::find( const string & path )
 {
-    return assets[path];
+    if ( assets.count( path ) )
+	return assets[path];
+    return std::shared_ptr<Asset>( 0 );
 }
