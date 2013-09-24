@@ -8,7 +8,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-static map<string,shared_ptr<Post> > posts;
+static map<string,std::shared_ptr<Post> > posts;
 
 
 
@@ -22,8 +22,9 @@ static map<string,shared_ptr<Post> > posts;
 */
 
 Post::Post( const string & path )
+    : name( Path( path ) ), posted( time_from_string( "1998-06-07 21:25:00" ) )
 {
-    posts["/" + path] = shared_ptr<Post>( this );
+    posts["/" + name.canonical()] = std::shared_ptr<Post>( this );
 }
 
 
@@ -41,24 +42,26 @@ const Node & Post::rootNode() const
     Returns a null pointer if there is no such Post.
 */
 
-shared_ptr<Post> Post::find( const std::string & path )
+std::shared_ptr<Post> Post::find( const std::string & path )
 {
-    return posts[path]; // XXX is this correct?
+    if ( posts.count( path ) )
+	return posts[path];
+    return std::shared_ptr<Post>( 0 );
 }
 
 
 /*! Returns the set of all Post objects, not sorted at all.
 */
 
-vector< shared_ptr<Post> > Post::all()
+PostSet Post::all()
 {
-    vector< shared_ptr<Post> > result;
+    PostSet r;
     auto p = posts.begin();
     while ( p != posts.end() ) {
-	result.push_back( p->second );
+	r.push_back( p->second );
 	++p;
     }
-    return result;
+    return r;
 }
 
 
@@ -134,9 +137,9 @@ void Post::setTags( const string & tagList )
 /*! Records that the publication date of this post is \a date.
 */
 
-void Post::setDate( const string & )
+void Post::setDate( const string & date )
 {
-    // later
+    posted = time_from_string( date );
 }
 
 
@@ -151,7 +154,15 @@ bool Post::tagged( const string & t ) const
 
 /*! Returns the publication date of this Post. */
 
-int Post::date() const
+ptime Post::date() const
 {
-    return 0;
+    return posted;
+}
+
+
+/*! Returns the path to this Post. */
+
+Path Post::path() const
+{
+    return name;
 }

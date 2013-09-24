@@ -5,6 +5,7 @@
 
 #include "base.h"
 #include "node.h"
+#include "path.h"
 
 
 class Post {
@@ -13,8 +14,8 @@ public:
 
     const Node & rootNode() const;
 
-    static shared_ptr<Post> find( const string & );
-    static vector< shared_ptr<Post> > all();
+    static std::shared_ptr<Post> find( const string & );
+    static class PostSet all();
 
     void reload( const string & );
 
@@ -23,11 +24,14 @@ public:
 
     bool tagged( const string & ) const;
 
-    int date() const;
+    ptime date() const;
+    Path path() const;
 
 private:
-    shared_ptr<Node> root;
+    Path name;
+    std::shared_ptr<Node> root;
     set<string> tags;
+    ptime posted;
 };
 
 
