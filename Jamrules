@@ -1,10 +1,18 @@
-C++ = clang ;
-C++FLAGS += -O0 -I. -W -Wall -g -Wno-c++11-extensions -Wno-local-type-template-args ;
-LINK = $(C++) ;
-LINKFLAGS = -g ;
-LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
-
-BUILD = build/clang ;
+if $(COMPILER) = "clang" {
+    C++ = clang ;
+    C++FLAGS += -O0  -W -Wall -g -Wno-c++11-extensions -Wno-local-type-template-args ;
+    LINK = $(C++) ;
+    LINKFLAGS = -g ;
+    LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
+    BUILD = build/clang ;
+} else {
+    C++ = g++ ;
+    C++FLAGS += -g -W -Wall -Wno-c++0x-compat -std=c++11 ;
+    LINK = $(C++) ;
+    LINKFLAGS = -g ;
+    LIBS = -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
+    BUILD = build/g++ ;
+}
 
 
 rule SubInclude
