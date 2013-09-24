@@ -1,0 +1,9 @@
+#!/bin/zsh -e
+
+for base in tests/*(/) ; do
+    echo ; echo Test: $base
+    ./bin/plusxome --base-directory $base --config $base/config --port 3008 &
+    curl http://localhost:3008/
+    kill %1
+    echo " - done"
+done
