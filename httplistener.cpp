@@ -50,14 +50,9 @@ HttpListener::HttpListener( Family family, int port )
 	::setsockopt( f, SOL_SOCKET, SO_REUSEADDR, &i, sizeof (int) );
 
 	struct sockaddr_in6 addr;
+	::memset( &addr, 0, sizeof( addr ) );
 	addr.sin6_family = AF_INET6;
 	addr.sin6_port = htons( port );
-	i = 0;
-	while ( i < 8 ) {
-	    addr.sin6_addr.s6_addr16[i] = 0;
-	    i++;
-	}
-
 	retcode = ::bind( f, (struct sockaddr *)&addr, sizeof( addr ) );
     }
 
