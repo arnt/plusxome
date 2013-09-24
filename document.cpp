@@ -10,7 +10,6 @@
 
 
 using namespace std;
-using boost::shared_ptr;
 
 
 
@@ -54,8 +53,8 @@ static void getTidyAttributes( Node & node, TidyNode tidyNode ) {
 
 // this is a static private helper for the following constructor
 
-static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
-    shared_ptr<Node> node( new Node );
+static std::shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
+    std::shared_ptr<Node> node( new Node );
     switch ( tidyNodeGetType( tidyNode ) ) {
     case TidyNode_Start:
 	node->t = Node::Tag;
@@ -78,7 +77,7 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
     }
     TidyNode child = tidyGetChild( tidyNode );
     while ( child ) {
-	shared_ptr<Node> candidate( fromTidyNode( tdoc, child ) );
+	std::shared_ptr<Node> candidate( fromTidyNode( tdoc, child ) );
 	if ( candidate->t != Node::Junk )
 	    node->children.push_back( candidate );
 	child = tidyGetNext( child );
@@ -88,7 +87,7 @@ static shared_ptr<Node> fromTidyNode( TidyDoc tdoc, TidyNode tidyNode ) {
 
 // this is a static private helper for the following constructor
 
-static shared_ptr<Node> fromHtml( const std::string & html ) {
+static std::shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
 
     // don't let tidy generate any meta generator tag
@@ -144,10 +143,10 @@ Document & Document::operator=( const Document & other ) {
 void Document::populateIdMap()
 {
     ids.clear();
-    list< shared_ptr<Node> > outstanding;
+    list< std::shared_ptr<Node> > outstanding;
     outstanding.push_back( root );
     while ( !outstanding.empty() ) {
-	shared_ptr<Node> current = outstanding.front();
+	std::shared_ptr<Node> current = outstanding.front();
 	outstanding.pop_front();
 
 	auto child = current->children.begin();
@@ -169,7 +168,7 @@ void Document::populateIdMap()
     node, a temporary invisible Node is returned.
 */
 
-shared_ptr<Node> Document::node( const string & id )
+std::shared_ptr<Node> Document::node( const string & id )
 {
     if ( ids.empty() )
 	populateIdMap();
@@ -188,7 +187,7 @@ void Document::parse( const std::string & s )
 
 /*! Returns a reference to the root Node of the parsed document. */
 
-shared_ptr<Node> Document::rootNode()
+std::shared_ptr<Node> Document::rootNode()
 {
     return root;
 }
@@ -214,9 +213,9 @@ int Document::httpResponseCode() const
 }
 
 
-static void addElementsByTag( shared_ptr<Node> node,
+static void addElementsByTag( std::shared_ptr<Node> node,
 			      const string & name,
-			      list<shared_ptr<Node> > & r ) {
+			      list<std::shared_ptr<Node> > & r ) {
     if ( name == (*node).tagName )
 	r.push_back( node );
     auto c = (*node).children.begin();
@@ -230,9 +229,9 @@ static void addElementsByTag( shared_ptr<Node> node,
 /*! Returns a list of the nodes named \a name.
 */
 
-list<shared_ptr<Node> > Document::getElementsByTag( const string & name )
+list<std::shared_ptr<Node> > Document::getElementsByTag( const string & name )
 {
-    list<shared_ptr<Node> > r;
+    list<std::shared_ptr<Node> > r;
     addElementsByTag( root, name, r );
     return r;
 }

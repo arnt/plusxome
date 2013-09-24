@@ -96,20 +96,28 @@ static map<string, PluginRegistration *> * registered = 0;
 void Plugin::setActivePlugins( const string & plugins )
 {
     (void)new LastResort();
-    list<string> tokens;
-    split( tokens, plugins, is_any_of("," ) );
-    auto t = tokens.begin();
-    while ( t != tokens.end() ) {
-	string name = *t;
-	++t;
-	trim( name );
-	PluginRegistration * p = 0;
-	if ( registered )
-	    p = (*registered)[name];
-	if ( p )
-	    (void)(*p)();
-	else
-	    throw "Unknown plugin type: '" + name + "'";
+    if ( plugins == "all" ) {
+	auto i = registered->begin();
+	while ( i != registered->end() ) {
+	    (*(i->second))();
+	    ++i;
+	}
+    } else {
+	list<string> tokens;
+	split( tokens, plugins, is_any_of("," ) );
+	auto t = tokens.begin();
+	while ( t != tokens.end() ) {
+	    string name = *t;
+	    ++t;
+	    trim( name );
+	    PluginRegistration * p = 0;
+	    if ( registered )
+		p = (*registered)[name];
+	    if ( p )
+		(void)(*p)();
+	    else
+		throw "Unknown plugin type: '" + name + "'";
+	}
     }
 }
 
@@ -168,7 +176,7 @@ void Plugin::setupPlugins()
 }
 
 
-/*! 
+/*!
 
 */
 

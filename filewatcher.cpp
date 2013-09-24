@@ -105,7 +105,7 @@ void FileWatcher::start()
 		    paths.insert( filename );
 		    // but we skip the nulls before processing the next event
 		    o += e.len;
-		} 
+		}
 	    }
 	    int more = 0;
 	    r = ioctl( fd, FIONREAD, &more );
@@ -140,7 +140,7 @@ void FileWatcher::processPaths( const set<string> & paths )
 	     p->substr(0, pds) == postdir &&
 	     p->substr(p->size() - 5) == ".post" ) {
 	    string path = p->substr( pds + 1, p->size() - pds - 1 -5 );
-	    shared_ptr<Post> post = Post::find( path );
+	    std::shared_ptr<Post> post = Post::find( path );
 	    if ( post )
 		post->reload( *p );
 	    else
@@ -149,7 +149,7 @@ void FileWatcher::processPaths( const set<string> & paths )
 		    (*p)[ads] == '/' &&
 		    p->substr(0, pds) == Config::assetDirectory ) {
 	    string path = p->substr( ads + 1 );
-	    shared_ptr<Asset> asset = Asset::find( path );
+	    std::shared_ptr<Asset> asset = Asset::find( path );
 	    if ( asset )
 		asset->reload( *p );
 	    else

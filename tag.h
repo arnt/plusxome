@@ -3,7 +3,7 @@
 #ifndef TAG_H
 #define TAG_H
 
-#include "post.h"
+#include "postset.h"
 
 
 class Tag {
@@ -13,9 +13,9 @@ public:
 
     void unlearnPosts();
 
-    list< shared_ptr<Post> > posts() const;
+    PostSet postSet() const;
 
-    Tag * find( const string & );
+    static Tag * find( const string & );
 
     bool regular() const;
 
@@ -26,7 +26,7 @@ private:
     mutable bool l;
     bool r;
     string n;
-    mutable list< shared_ptr<Post> > c;
+    mutable PostSet posts;
     mutable shared_mutex m;
 };
 

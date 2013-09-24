@@ -53,8 +53,8 @@ int main( int argc, char ** argv ) {
 	  value<string>( &Config::assetDirectory )->default_value( "assets" ),
 	  "base directory for assets (relative to base-directory)" )
 	( "plugins",
-	  value<string>( &activePlugins )->default_value( "singlepost, homepage, robotstxt" ),
-	  "active plugins (comma-separated)" );
+	  value<string>( &activePlugins )->default_value( "all" ),
+	  "active plugins (comma-separated, or the word all)" );
     conf.add( Plugin::pluginOptions() );
     cli.add( conf );
 

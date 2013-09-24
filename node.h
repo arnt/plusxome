@@ -26,7 +26,7 @@ public:
     std::string tagName;
     std::map<std::string, std::string> attributes;
 
-    std::list<boost::shared_ptr<Node> > children;
+    std::list<std::shared_ptr<Node> > children;
 
     std::string text;
 

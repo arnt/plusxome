@@ -1,6 +1,7 @@
 // Copyright Arnt Gulbrandsen, arnt@gulbrandsen.priv.no.
 
 #include "homepage.h"
+#include "postset.h"
 
 static Registration<HomePage> r( "homepage" );
 
@@ -21,10 +22,6 @@ HomePage::HomePage()
 {
 }
 
-static bool byDate( const shared_ptr<Post> & c1, const shared_ptr<Post> & c2 )
-{
-    return c1->date() > c2->date();
-}
 
 Document HomePage::produce( const Path & path ) const
 {
@@ -33,17 +30,14 @@ Document HomePage::produce( const Path & path ) const
 
     Document result( *t );
 
-    auto posts = Post::all();
-    sort( posts.begin(), posts.end(), byDate );
-    auto p = posts.begin();
-    int n = 0;
-    shared_ptr<Node> parent = result.node( "postings" );
+    auto posts = Post::all().mostRecentFirst().section( 0, postings );
+    std::shared_ptr<Node> parent = result.node( "postings" );
     if ( parent ) {
-	while ( p != posts.end() && n < postings ) {
-	    shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
+	auto p = posts.begin();
+	while ( p != posts.end() ) {
+	    std::shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
 	    parent->children.push_back( r );
 	    ++p;
-	    ++n;
 	}
     }
     return result;

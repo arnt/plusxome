@@ -41,7 +41,7 @@ Tag::Tag( const string & t, bool regular )
 void Tag::unlearnPosts()
 {
     l = false;
-    c.clear();
+    posts.clear();
 }
 
 
@@ -49,7 +49,7 @@ void Tag::unlearnPosts()
     or an empty list if this Tag has no name.
 */
 
-list< shared_ptr<Post> > Tag::posts() const
+PostSet Tag::postSet() const
 {
     if ( !l ) {
 	unique_lock<shared_mutex> lock( m );
@@ -57,11 +57,11 @@ list< shared_ptr<Post> > Tag::posts() const
 	auto p = all.begin();
 	while ( p != all.end() ) {
 	    if ( (*p)->tagged( n ) )
-		c.push_back( *p );
+		posts.push_back( *p );
 	    ++p;
 	}
     }
-    return c;
+    return posts;
 }
 
 

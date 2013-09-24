@@ -16,22 +16,22 @@ public:
 
     Document & operator=( const Document & other );
 
-    shared_ptr<Node> node( const string & );
-    shared_ptr<Node> rootNode();
+    std::shared_ptr<Node> node( const string & );
+    std::shared_ptr<Node> rootNode();
 
     void parse( const std::string & );
 
     void setHttpResponseCode( int );
     int httpResponseCode() const;
 
-    list< shared_ptr<Node> > getElementsByTag( const string & );
+    list< std::shared_ptr<Node> > getElementsByTag( const string & );
 
 private:
     void populateIdMap();
 
 private:
-    shared_ptr<Node> root;
-    map<string,shared_ptr<Node> > ids;
+    std::shared_ptr<Node> root;
+    map<string,std::shared_ptr<Node> > ids;
     int responseCode;
 };
 
