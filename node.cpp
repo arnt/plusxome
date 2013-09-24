@@ -55,6 +55,9 @@ void Node::append( string & output )
 	    output.append( "</" );
 	    output.append( tagName );
 	    output.append( ">" );
+	    if ( tagName == "div" || tagName == "html" ) {
+		output.push_back( '\n' );
+	    }
 	}
 	break;
 
