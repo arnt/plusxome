@@ -6,6 +6,9 @@
 #include "file.h"
 #include "document.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include <boost/algorithm/string.hpp>
 
 static map<string,std::shared_ptr<Post> > posts;
@@ -22,7 +25,7 @@ static map<string,std::shared_ptr<Post> > posts;
 */
 
 Post::Post( const string & path )
-    : name( Path( path ) ), posted( time_from_string( "1998-06-07 21:25:00" ) )
+    : name( Path( path ) )
 {
     posts["/" + name.canonical()] = std::shared_ptr<Post>( this );
 }
@@ -94,6 +97,12 @@ void Post::reload( const string & path )
 	i++;
     }
 
+    if ( posted == ptime(not_a_date_time) ) {
+	struct stat st;
+        (void)::stat( path.c_str(), &st );
+	posted = from_time_t(st.st_ctime);
+    }
+
     if ( i < contents.size() )
 	html += contents.substr( i );
     root = Document( html ).getElementsByTag( "body" ).front();
@@ -134,12 +143,32 @@ void Post::setTags( const string & tagList )
 }
 
 
+static const std::locale timeFormats[] = {
+    locale( locale::classic(),
+	    new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S") ),
+    locale( locale::classic(),
+	    new boost::posix_time::time_input_facet("%Y/%m/%d %H:%M:%S") ),
+    locale( locale::classic(),
+	    new boost::posix_time::time_input_facet("%d.%m.%Y %H:%M:%S") ),
+    locale( locale::classic(),
+	    new boost::posix_time::time_input_facet("%Y-%m-%d") )
+};
+static const size_t numTimeFormats =
+    sizeof(timeFormats)/sizeof(timeFormats[0]);
+
+
 /*! Records that the publication date of this post is \a date.
 */
 
 void Post::setDate( const string & date )
 {
-    posted = time_from_string( date );
+    uint n = 0;
+    posted = ptime(not_a_date_time);
+    while ( n < numTimeFormats && posted == ptime(not_a_date_time) ) {
+	istringstream is( date );
+	is.imbue( timeFormats[n++] );
+	is >> posted;
+    }
 }
 
 

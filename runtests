@@ -1,9 +1,11 @@
-#!/bin/zsh -e
+#!/bin/zsh
 
 for base in tests/*(/) ; do
-    ./bin/plusxome --base-directory $base --config $base/config --port 3008 &
+    PORT=$(expr 3008 + $(basename $base))
+    echo for gdb: run --base-directory $base --config $base/config --port $PORT &
+    ./bin/plusxome --base-directory $base --config $base/config --port $PORT &
     for t in $base/*.t ; do
-        curl -s http://localhost:3008$(head -1 $t) > /tmp/runtests-$$-saw
+        curl -s http://localhost:$PORT$(head -1 $t) > /tmp/runtests-$$-saw
         sed -n '2,$ p' < $t > /tmp/runtests-$$-wanted
         echo ; echo $t
         if cmp -s /tmp/runtests-$$-{wanted,saw} ; then
