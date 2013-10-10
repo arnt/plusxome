@@ -7,7 +7,7 @@ if $(COMPILER) = "clang" {
     BUILD = build/clang ;
 } else {
     C++ = g++ ;
-    C++FLAGS += -g -W -Wall -Wno-c++0x-compat -std=c++11 ;
+    C++FLAGS += -g -W -Wall -Wno-c++0x-compat -std=c++0x ;
     LINK = $(C++) ;
     LINKFLAGS = -g ;
     LIBS = -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
