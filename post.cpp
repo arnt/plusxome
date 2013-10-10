@@ -13,6 +13,7 @@
 
 static map<string,std::shared_ptr<Post> > posts;
 
+static boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
 
 
 /*! \class Post post.h
@@ -107,6 +108,11 @@ void Post::reload( const string & path )
 	html += contents.substr( i );
     root = Document( html ).getElementsByTag( "body" ).front();
     root->tagName = "article";
+
+    ostringstream o;
+    o.imbue( locale( o.getloc(), facet ) );
+    o << posted;
+    root->attributes["data-posting-date"] = o.str();
 }
 
 
