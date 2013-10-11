@@ -14,7 +14,7 @@ public:
 
     void setup();
 
-    static options_description options();
+    static options_description * options();
 
 private:
     Template * t;

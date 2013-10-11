@@ -28,19 +28,10 @@ Document HomePage::produce( const Path & path ) const
     if ( path.components() )
 	return Plugin::produce( path );
 
-    Document result( *t );
-
-    auto posts = Post::all().mostRecentFirst().section( 0, postings );
-    std::shared_ptr<Node> parent = result.node( "postings" );
-    if ( parent ) {
-	auto p = posts.begin();
-	while ( p != posts.end() ) {
-	    std::shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
-	    parent->children.push_back( r );
-	    ++p;
-	}
-    }
-    return result;
+    return TagPage::produce( Post::all().
+			     mostRecentFirst().
+			     section( 0, postings ),
+			     t );
 }
 
 
@@ -52,16 +43,13 @@ void HomePage::setup()
 }
 
 
-/*!
-
-*/
-
-options_description HomePage::options()
+options_description * HomePage::options()
 {
-    options_description conf( "Options for "
-			      "the homepage plugin" );
+    options_description * conf =
+	new options_description( "Options for "
+				 "the homepage plugin" );
 
-    conf.add_options()
+    conf->add_options()
 	( "home-template",
 	  value<string>( &tn )->default_value( "home.template" ),
 	  "home page template file name" )

@@ -12,7 +12,7 @@ public:
 
     Rendering render( const Path & ) const;
 
-    static options_description options();
+    static options_description * options();
 };
 
 

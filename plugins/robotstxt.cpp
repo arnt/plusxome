@@ -36,7 +36,7 @@ Rendering RobotsTxt::render( const Path & path ) const
 
 */
 
-options_description RobotsTxt::options()
+options_description * RobotsTxt::options()
 {
-    return options_description();
+    return new options_description();
 }

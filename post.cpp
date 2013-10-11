@@ -13,8 +13,6 @@
 
 static map<string,std::shared_ptr<Post> > posts;
 
-static boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
-
 
 /*! \class Post post.h
 
@@ -28,7 +26,7 @@ static boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
 Post::Post( const string & path )
     : name( Path( path ) )
 {
-    posts["/" + name.canonical()] = std::shared_ptr<Post>( this );
+    posts[name.canonical()] = std::shared_ptr<Post>( this );
 }
 
 
@@ -40,6 +38,16 @@ const Node & Post::rootNode() const
 }
 
 
+/*! Returns a Node that's a link to this posting, 
+
+*/
+
+const Node & Post::linkHere() const
+{
+    return *link;
+}
+
+
 /*! Returns a pointer to the Post corresponding to \a path. \a path should
     not include the leading base directory or trailing .post.
 
@@ -48,7 +56,7 @@ const Node & Post::rootNode() const
 
 std::shared_ptr<Post> Post::find( const std::string & path )
 {
-    if ( posts.count( path ) )
+    if ( posts.find( path ) != posts.end() )
 	return posts[path];
     return std::shared_ptr<Post>( 0 );
 }
@@ -76,10 +84,16 @@ PostSet Post::all()
 void Post::reload( const string & path )
 {
     string contents( File( path ).contents() );
+    if ( contents.empty() ) {
+	posts.erase( name.canonical() );
+	return;
+    }
     unsigned int i = 0;
     while ( i < contents.size() && contents[i] != '\n' )
 	i++;
-    string html( "<h1>" + contents.substr( 0, i ) + "</h1>" );
+    string html( "<h1>"
+		 "<a href=\"" + name.canonical() + "\">" +
+		 contents.substr( 0, i ) + "</a></h1>" );
     i++;
     while ( i < contents.size() && contents[i] != '\n' ) {
 	unsigned int s = i;
@@ -108,8 +122,10 @@ void Post::reload( const string & path )
 	html += contents.substr( i );
     root = Document( html ).getElementsByTag( "body" ).front();
     root->tagName = "article";
+    link = Document( html ).getElementsByTag( "a" ).front();
 
     ostringstream o;
+    boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
     o.imbue( locale( o.getloc(), facet ) );
     o << posted;
     root->attributes["data-posting-date"] = o.str();
@@ -149,18 +165,22 @@ void Post::setTags( const string & tagList )
 }
 
 
-static const std::locale timeFormats[] = {
-    locale( locale::classic(),
-	    new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S") ),
-    locale( locale::classic(),
-	    new boost::posix_time::time_input_facet("%Y/%m/%d %H:%M:%S") ),
-    locale( locale::classic(),
-	    new boost::posix_time::time_input_facet("%d.%m.%Y %H:%M:%S") ),
-    locale( locale::classic(),
-	    new boost::posix_time::time_input_facet("%Y-%m-%d") )
-};
-static const size_t numTimeFormats =
-    sizeof(timeFormats)/sizeof(timeFormats[0]);
+/*! Looks up and returns a list of the Tag objects that ought to
+    contain this Post.
+
+    This includes tag pairs.
+*/
+
+set<Tag *> Post::findTags() const
+{
+    set<Tag *> result;
+    auto t = tags.begin();
+    while ( t != tags.end() ) {
+	result.insert( Tag::find( *t ) );
+	++t;
+    }
+    return result;
+}
 
 
 /*! Records that the publication date of this post is \a date.
@@ -168,13 +188,18 @@ static const size_t numTimeFormats =
 
 void Post::setDate( const string & date )
 {
-    uint n = 0;
     posted = ptime(not_a_date_time);
-    while ( n < numTimeFormats && posted == ptime(not_a_date_time) ) {
-	istringstream is( date );
-	is.imbue( timeFormats[n++] );
-	is >> posted;
-    }
+    
+    istringstream is( date );
+    is.imbue( locale( locale::classic(),
+		      new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S") ) );
+    is >> posted;
+    if ( posted != not_a_date_time )
+	return;
+    
+    is.imbue( locale( locale::classic(),
+		      new boost::posix_time::time_input_facet("%Y-%m-%d") ) );
+    is >> posted;
 }
 
 

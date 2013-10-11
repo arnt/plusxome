@@ -8,11 +8,20 @@
 
 class TagPage: public Plugin {
 public:
-    TagPage( options_description & );
+    TagPage();
 
     Document produce( const Path & ) const;
 
+    static Document produce( const PostSet &, Template * );
+
     void setup();
+
+    static options_description * options();
+
+private:
+    static void fillInOtherPosts( std::shared_ptr<Node>,
+				  const PostSet &,
+				  const map< std::shared_ptr<Post>, Tag * > & );
 
 private:
     Template * t;

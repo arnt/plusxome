@@ -53,6 +53,7 @@ PostSet Tag::postSet() const
 {
     if ( !l ) {
 	unique_lock<shared_mutex> lock( m );
+	l = true;
 	auto all = Post::all();
 	auto p = all.begin();
 	while ( p != all.end() ) {
@@ -65,12 +66,14 @@ PostSet Tag::postSet() const
 }
 
 
-/*! Returns a reference to a Tag named \a s, or to a meaningless empty
-    tag if no Tag has that name.
+/*! Returns a pointer to a Tag named \a s, or a null pointer if no Tag
+    has that name.
 */
 
 Tag * Tag::find( const string & s )
 {
+    if ( tags.find( s ) == tags.end() )
+	return 0;
     return tags[s];
 }
 
@@ -92,6 +95,14 @@ bool Tag::regular() const
 
 void Tag::ensure( const string & n, bool regular )
 {
-    if ( tags.find( n ) != tags.end() )
+    if ( tags.find( n ) == tags.end() )
 	(void)new Tag( n, regular );
+}
+
+
+/*! Returns the name of this Tag, as supplied to ensure(). */
+
+string Tag::name() const
+{
+    return n;
 }

@@ -4,7 +4,7 @@
 
 #include "postset.h"
 
-Registration<Sitemap> r( "sitemap" );
+static Registration<Sitemap> r( "sitemap" );
 
 
 /*! \class Sitemap sitemap.h
@@ -61,7 +61,7 @@ Rendering Sitemap::render( const Path & path ) const
     has to exist.
 */
 
-options_description Sitemap::options()
+options_description * Sitemap::options()
 {
-    return options_description();
+    return new options_description();
 }

@@ -29,10 +29,10 @@ Rendering::Rendering()
 */
 
 Rendering::Rendering( Document & document )
+    : tmp( "<!doctype html>\n" ),
+      responseCode( document.httpResponseCode() ),
+      ctype( "text/html" )
 {
-    responseCode = document.httpResponseCode();
-    tmp = "<!doctype html>\n";
-    ctype = "text/html";
     document.rootNode()->append( tmp );
 }
 
@@ -41,10 +41,10 @@ Rendering::Rendering( Document & document )
 */
 
 Rendering::Rendering( const string & content, const string & contentType )
+    : tmp( content ),
+      responseCode( 200 ),
+      ctype( contentType )
 {
-    responseCode = 200;
-    tmp = content;
-    ctype = contentType;
 }
 
 

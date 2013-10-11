@@ -22,7 +22,7 @@ public:
 
 private:
     string tmp;
-    int responseCode;
+    unsigned int responseCode;
     string ctype;
 };
 

@@ -101,7 +101,9 @@ static std::shared_ptr<Node> fromHtml( const std::string & html ) {
     (void)::tidyParseString( tdoc, html.c_str() );
     (void)::tidyCleanAndRepair( tdoc );
     tidyBufFree( &errorBuffer );
-    return fromTidyNode( tdoc, ::tidyGetRoot( tdoc ) );
+    auto r = fromTidyNode( tdoc, ::tidyGetRoot( tdoc ) );
+    ::tidyRelease( tdoc );
+    return r;
 }
 
 
@@ -122,13 +124,17 @@ Document::Document( const std::string & html )
 */
 
 Document::Document( const Document & other )
+    : responseCode( 200 )
 {
     *this = other;
 }
 
 
 Document & Document::operator=( const Document & other ) {
-    root = other.root;
+    if ( other.root )
+	root = std::shared_ptr<Node>( new Node( *other.root ) );
+    else
+	root = std::shared_ptr<Node>( 0 );
     ids.clear();
     return *this;
 }

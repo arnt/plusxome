@@ -176,17 +176,13 @@ void Plugin::setupPlugins()
 }
 
 
-/*!
-
-*/
-
-options_description Plugin::pluginOptions()
+options_description * Plugin::pluginOptions()
 {
     // static map<string, PluginRegistration *> * registered = 0;
     auto r = registered->begin();
-    options_description cf;
+    options_description * cf = new options_description();
     while ( r != registered->end() ) {
-	cf.add( r->second->options() );
+	cf->add( *(r->second->options()) );
 	++r;
     }
     return cf;

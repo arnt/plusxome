@@ -2,4 +2,5 @@ SubDir TOP plugins ;
 
 Build plugins : singlepost.cpp
                 robotstxt.cpp sitemap.cpp
-                homepage.cpp tagpage.cpp ;
+                homepage.cpp tagpage.cpp 
+		feed.cpp ;

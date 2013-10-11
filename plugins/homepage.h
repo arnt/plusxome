@@ -3,10 +3,10 @@
 #ifndef HOMEPAGE_H
 #define HOMEPAGE_H
 
-#include "plugin.h"
+#include "tagpage.h"
 
 
-class HomePage: public Plugin {
+class HomePage: public TagPage {
 public:
     HomePage();
 
@@ -14,7 +14,7 @@ public:
 
     void setup();
 
-    static options_description options();
+    static options_description * options();
 
 private:
     Template * t;

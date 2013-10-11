@@ -1,18 +1,27 @@
 #!/bin/zsh
 
+killall -9 plusxome
+
 for base in tests/*(/) ; do
     PORT=$(expr 3008 + $(basename $base))
     echo for gdb: run --base-directory $base --config $base/config --port $PORT &
     ./bin/plusxome --base-directory $base --config $base/config --port $PORT &
-    for t in $base/*.t ; do
-        curl -s http://localhost:$PORT$(head -1 $t) > /tmp/runtests-$$-saw
-        sed -n '2,$ p' < $t > /tmp/runtests-$$-wanted
-        echo ; echo $t
-        if cmp -s /tmp/runtests-$$-{wanted,saw} ; then
-            echo " - passed"
-        else
-            diff -u /tmp/runtests-$$-{wanted,saw}
-        fi
+    for t in $(ls $base | egrep '\.(t|sh)$' | sort -n) ; do
+        case $t in
+	    *.t)
+	        curl -s http://localhost:$PORT$(head -1 $base/$t) > /tmp/runtests-$$-saw
+	        sed -n '2,$ p' < $base/$t > /tmp/runtests-$$-wanted
+	        echo ; echo $base/$t
+	        if cmp -s /tmp/runtests-$$-{wanted,saw} ; then
+	            echo " - passed"
+	        else
+	            diff -u /tmp/runtests-$$-{wanted,saw}
+	        fi
+		;;
+	    *.sh)
+		(cd $base ; ./$t)
+		;;
+	esac
     done
     kill %1
 done

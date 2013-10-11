@@ -15,6 +15,7 @@ public:
     int components() const;
 
     std::string canonical() const;
+    std::string absolute() const;
 
 private:
     std::vector<std::string> parsed;

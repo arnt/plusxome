@@ -62,14 +62,12 @@ HttpServer::HttpServer( int fd )
 void HttpServer::start()
 {
     try {
-	while ( true ) {
-	    parseRequest( readRequest() );
-	    if ( f >= 0 )
-		respond();
-	}
+	parseRequest( readRequest() );
+	if ( f >= 0 )
+	    respond();
     } catch (...) {
-	close();
     }
+    close();
 }
 
 
@@ -89,7 +87,7 @@ string HttpServer::readRequest()
 
     bool done = false;
     int i = 0;
-    while ( i < 32768 && !done ) {
+    while ( i < 32768 && !done && f >= 0 ) {
 	char x[2];
 	int r = ::read( f, &x, 1 );
 	if ( r < 0 ) {
@@ -133,11 +131,11 @@ static string urldecoded( const string & escaped )
 	    ++i;
 	    bool ok = true;
 	    char buffer[3];
-	    if ( i == escaped.end() ) 
+	    if ( i == escaped.end() )
 		ok = false;
 	    else
 		buffer[0] = *i++;
-	    if ( i == escaped.end() ) 
+	    if ( i == escaped.end() )
 		ok = false;
 	    else
 		buffer[1] = *i++;
@@ -221,7 +219,8 @@ void HttpServer::respond()
 
 void HttpServer::close()
 {
-    ::close( f );
+    if ( f >= 1 )
+	::close( f );
     f = -1;
 }
 
@@ -277,4 +276,15 @@ void HttpServer::send( string response )
 	o += r;
     }
     close();
+}
+
+
+/*! Clears the cache used to speed up HTTP responses. The caller must
+    acquire a unique lock on lock() in order to safely call this
+    function.
+*/
+
+void HttpServer::clearCache()
+{
+    renderings.clear();
 }

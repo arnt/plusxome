@@ -2,6 +2,8 @@
 
 #include "path.h"
 
+#include "config.h"
+
 
 /*! \class Path path.h
 
@@ -85,4 +87,18 @@ int Path::components() const
 {
     return parsed.size();
 
+}
+
+
+/*! Returns the absolute form of this Path, likely starting with http://
+*/
+
+std::string Path::absolute() const
+{
+    string r = Config::homePageUrl;
+    if ( r[r.size()] == '/' )
+	r += canonical().substr( 2 );
+    else
+	r += canonical();
+    return r;
 }

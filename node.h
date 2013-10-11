@@ -9,16 +9,25 @@
 class Node {
 public:
     Node();
+    Node( const Node & );
+    Node( const char * );
+    Node( const std::string & );
 
     Node & operator=( const Node & other ) {
 	t = other.t;
 	tagName = other.tagName;
 	attributes = other.attributes;
-	children = other.children;
+	children.clear();
+	auto c = other.children.begin();
+	while ( c != other.children.end() ) {
+	    children.push_back( std::shared_ptr<Node>( new Node( **c ) ) );
+	    ++c;
+	}
+	text = other.text;
 	return *this;
     }
 
-    void append( string & );
+    void append( string & ) const;
 
     enum Type { Root, Tag, Text, Junk };
 
@@ -31,9 +40,9 @@ public:
     std::string text;
 
 private:
-    void appendChildren( string & );
-    void appendAmpersandEscaped( string & );
-    void appendAttributes( string & );
+    void appendChildren( string & ) const;
+    void appendAmpersandEscaped( string & ) const;
+    void appendAttributes( string & ) const;
 };
 
 

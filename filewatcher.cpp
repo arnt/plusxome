@@ -2,6 +2,7 @@
 
 #include "filewatcher.h"
 
+#include "httpserver.h"
 #include "rendering.h"
 #include "template.h"
 #include "config.h"
@@ -124,6 +125,7 @@ void FileWatcher::start()
 void FileWatcher::processPaths( const set<string> & paths )
 {
     boost::unique_lock<boost::shared_mutex> lock(Rendering::lock());
+    HttpServer::clearCache();
 
     string postdir = Config::postDirectory;
     unsigned int pds = postdir.size();
@@ -132,7 +134,12 @@ void FileWatcher::processPaths( const set<string> & paths )
     auto p = paths.begin();
     while ( p != paths.end() ) {
 	struct stat st;
-        (void)::stat( p->c_str(), &st );
+        if ( ::stat( p->c_str(), &st ) ) {
+	    st.st_mode = 0;
+	    if ( errno != ENOENT ) {
+		// strange error - should notify blogger
+	    }
+	}
 	if ( S_ISDIR( st.st_mode ) ) {
 	    addWatch( *p );
 	} else if ( p->size() > pds + 1 + 5 &&

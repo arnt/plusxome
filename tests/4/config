@@ -1,0 +1,6 @@
+plugins = feed
+blog-name = Eloquence and hypocrisy
+blogger-name = Foo Bar
+blogger-email = asdf@example.org
+blogger-home = http://www.example.org
+home-page-url = http://blog.example.org

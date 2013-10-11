@@ -35,6 +35,8 @@ public:
 
     void close();
 
+    static void clearCache();
+
 private:
     Path p;
     Operation o;

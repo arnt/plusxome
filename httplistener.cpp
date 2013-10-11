@@ -57,7 +57,8 @@ HttpListener::HttpListener( Family family, int port )
     }
 
     if ( retcode < 0 ) {
-	::close( f );
+	if ( f >= 0 )
+	    ::close( f );
 	f = -1;
 	return;
     }
@@ -67,7 +68,11 @@ HttpListener::HttpListener( Family family, int port )
     // just go on.
     (void)::listen( f, 64 );
 
-    boost::thread( *this );
+    int t = 0;
+    while ( t < 3 ) {
+	boost::thread( *this );
+	t++;
+    }
     // this lets the thread run unmanaged; when run() exits the object
     // will be deallocated.
 }
@@ -81,10 +86,12 @@ void HttpListener::start()
 {
     while( f >= 0 ) {
 	int i = ::accept( f, 0, 0 );
-	if ( i >= 0 )
-	    boost::thread( HttpServer( i ) );
-	else if ( errno != EAGAIN )
+	if ( i >= 0 ) {
+	    HttpServer h( i );
+	    h.start();
+	} else if ( errno != EAGAIN ) {
 	    f = -1;
+	}
     }
 }
 

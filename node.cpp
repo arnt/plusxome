@@ -19,6 +19,28 @@ Node::Node()
 }
 
 
+/*! Constructs a Text node containing \a s.
+
+*/
+
+Node::Node( const char * s )
+    : t( Text ), text( s )
+{
+
+}
+
+
+/*!  Constructs a Text node containing \a s.
+
+*/
+
+Node::Node( const std::string & s )
+    : t( Text ), text( s )
+{
+
+}
+
+
 /*! Appends the contents of this Node to \a output.
 
     This also calls the children, so if this is called on the root
@@ -26,7 +48,7 @@ Node::Node()
     afterwards.
 */
 
-void Node::append( string & output )
+void Node::append( string & output ) const
 {
     switch ( t ) {
     case Root:
@@ -51,7 +73,9 @@ void Node::append( string & output )
 	appendAttributes( output );
 	output.append( ">" );
 	appendChildren( output );
-	if ( tagName != "p" ) {
+	if ( tagName == "li" ) {
+	    output.push_back( '\n' );
+	} else if ( tagName != "p" ) {
 	    output.append( "</" );
 	    output.append( tagName );
 	    output.append( ">" );
@@ -76,7 +100,7 @@ void Node::append( string & output )
     no children (but also does not fail).
 */
 
-void Node::appendChildren( string & output )
+void Node::appendChildren( string & output ) const
 {
     auto child = children.begin();
     while ( child != children.end() ) {
@@ -91,7 +115,7 @@ void Node::appendChildren( string & output )
     (but also doesn't fail) for other kinds of nodes.
 */
 
-void Node::appendAmpersandEscaped( string & output )
+void Node::appendAmpersandEscaped( string & output ) const
 {
     auto c = text.begin();
     while ( c != text.end() ) {
@@ -118,7 +142,7 @@ void Node::appendAmpersandEscaped( string & output )
     preceding space, or does nothing if there aren't any. Never fails.
 */
 
-void Node::appendAttributes( string & output )
+void Node::appendAttributes( string & output ) const
 {
     auto a = attributes.begin();
     while ( a != attributes.end() ) {
@@ -143,4 +167,12 @@ void Node::appendAttributes( string & output )
 	}
 	++a;
     }
+}
+
+
+/*!  Constructs a deep copy of \a other. */
+
+Node::Node( const Node & other )
+{
+    *this = other;
 }

@@ -13,11 +13,14 @@ public:
     Post( const string & );
 
     const Node & rootNode() const;
+    const Node & linkHere() const;
 
     static std::shared_ptr<Post> find( const string & );
     static class PostSet all();
 
     void reload( const string & );
+
+    set<class Tag *> findTags() const;
 
     void setTags( const string & );
     void setDate( const string & );
@@ -30,6 +33,7 @@ public:
 private:
     Path name;
     std::shared_ptr<Node> root;
+    std::shared_ptr<Node> link;
     set<string> tags;
     ptime posted;
 };

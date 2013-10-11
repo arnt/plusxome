@@ -17,6 +17,8 @@ public:
 
     static Tag * find( const string & );
 
+    string name() const;
+
     bool regular() const;
 
     static void ensure( const string &, bool = true );

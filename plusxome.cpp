@@ -17,14 +17,12 @@ using namespace boost::filesystem;
 
 #include "config.h"
 
-string Config::categoryTemplate;
-string Config::homePageTemplate;
-
 string activePlugins;
 
 string basedir;
 string Config::postDirectory;
 string Config::assetDirectory;
+string Config::homePageUrl;
 
 int port;
 
@@ -54,17 +52,26 @@ int main( int argc, char ** argv ) {
 	  "base directory for assets (relative to base-directory)" )
 	( "plugins",
 	  value<string>( &activePlugins )->default_value( "all" ),
-	  "active plugins (comma-separated, or the word all)" );
-    conf.add( Plugin::pluginOptions() );
+	  "active plugins (comma-separated, or the word all)" )
+	( "home-page-url",
+	  value<string>( &Config::homePageUrl )->default_value( "http://example.org" ),
+	  "the URL of the home page" );
+    conf.add( *(Plugin::pluginOptions()) );
     cli.add( conf );
 
     variables_map vm;
     store( parse_command_line( argc, argv, cli ), vm );
+    notify( vm );
 
     ifstream cfs( config.c_str() );
     store( parse_config_file( cfs, conf, true ), vm );
     notify( vm );
-    ::chdir( basedir.c_str() );
+
+    if ( ::chdir( basedir.c_str() ) ) {
+	cerr << "Plusxome: Cannot chdir( " << basedir << " )" << endl;
+	exit( 0 );
+    }
+
     Plugin::setActivePlugins( activePlugins );
 
     if ( vm.count( "help" ) ) {
@@ -80,7 +87,6 @@ int main( int argc, char ** argv ) {
 	cout << "Plusxome version 0.0" << endl;
 	exit( 0 );
     }
-
 
     (void)new FileWatcher;
     Plugin::setupPlugins();

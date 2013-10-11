@@ -44,12 +44,13 @@ void SinglePost::setup()
 }
 
 
-options_description SinglePost::options()
+options_description * SinglePost::options()
 {
-    options_description conf( "Configuration file options for "
-			      "the singlepost plugin" );
+    options_description * conf = 
+	new options_description( "Configuration file options for "
+				 "the singlepost plugin" );
 
-    conf.add_options()
+    conf->add_options()
 	( "post-template",
 	  value<string>( &tn )->default_value( "post.template" ),
 	  "post template file name" );
