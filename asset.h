@@ -14,6 +14,8 @@ public:
 
     void reload( const string & );
 
+    string contents() const;
+
 private:
     string c;
 };

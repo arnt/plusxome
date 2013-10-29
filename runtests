@@ -2,8 +2,9 @@
 
 killall -9 plusxome
 
+PORT=3020
+
 for base in tests/*(/) ; do
-    PORT=$(expr 3008 + $(basename $base))
     echo for gdb: run --base-directory $base --config $base/config --port $PORT &
     ./bin/plusxome --base-directory $base --config $base/config --port $PORT &
     for t in $(ls $base | egrep '\.(t|sh)$' | sort -n) ; do
@@ -15,7 +16,9 @@ for base in tests/*(/) ; do
 	        if cmp -s /tmp/runtests-$$-{wanted,saw} ; then
 	            echo " - passed"
 	        else
-	            diff -u /tmp/runtests-$$-{wanted,saw}
+		    F=/tmp/runtests-$$-$(basename $base)-$(basename $t .t)
+		    cp -v /tmp/runtests-$$-saw $F
+	            diff -u /tmp/runtests-$$-wanted $F
 	        fi
 		;;
 	    *.sh)
@@ -24,4 +27,5 @@ for base in tests/*(/) ; do
 	esac
     done
     kill %1
+    PORT=$(expr $PORT + 1)
 done

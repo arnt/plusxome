@@ -66,14 +66,17 @@ void Node::append( string & output ) const
 	       tagName == "aside" ||
 	       tagName == "nav" ||
 	       tagName == "article" ||
-	       tagName == "header" || tagName == "footer" ) )
+	       tagName == "header" || tagName == "footer" ||
+	       tagName == "link" || tagName == "meta" ) )
 	    output.push_back( '\n' );
 	output.append( "<" );
 	output.append( tagName );
 	appendAttributes( output );
 	output.append( ">" );
 	appendChildren( output );
-	if ( tagName == "li" ) {
+	if ( tagName == "li" ||
+	    tagName == "meta" ||
+	     tagName == "link" ) {
 	    output.push_back( '\n' );
 	} else if ( tagName != "p" ) {
 	    output.append( "</" );

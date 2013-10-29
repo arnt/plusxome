@@ -37,7 +37,17 @@ void Asset::reload( const string & file )
 
 std::shared_ptr<Asset> Asset::find( const string & path )
 {
-    if ( assets.count( path ) )
+    if ( assets.find( path ) != assets.end() )
 	return assets[path];
     return std::shared_ptr<Asset>( 0 );
+}
+
+
+/*! Returns the contents of this Asset as a plain string. Maybe it
+    would be better to mmap(), but for now this is what I do.
+*/
+
+string Asset::contents() const
+{
+    return c;
 }

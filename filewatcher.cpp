@@ -152,10 +152,10 @@ void FileWatcher::processPaths( const set<string> & paths )
 		post->reload( *p );
 	    else
 		(new Post( path ))->reload( *p );
-	} else if ( p->size() > ads + 1 + 5 &&
+	} else if ( p->size() > ads + 1 &&
 		    (*p)[ads] == '/' &&
-		    p->substr(0, pds) == Config::assetDirectory ) {
-	    string path = p->substr( ads + 1 );
+		    p->substr( 0, ads ) == Config::assetDirectory ) {
+	    string path = p->substr( ads );
 	    std::shared_ptr<Asset> asset = Asset::find( path );
 	    if ( asset )
 		asset->reload( *p );

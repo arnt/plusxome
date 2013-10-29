@@ -1,0 +1,88 @@
+/* basic blah */
+html {
+    color: #202020;
+    background: #ffffff;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 22px;
+    widows: 4;
+    orphans: 4;
+    hyphens: manual;
+}
+
+body {
+    max-width: 38em;
+}
+
+
+/* colouring the links */
+a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: #74100c;
+}
+
+a:link {
+    color: #19199c;
+}
+
+a:visited:hover {
+    color: #85120d;
+    background: #ffffff;
+}
+
+a:link:hover {
+    color: #19199c;
+    background: #cacaee;
+}
+
+h1 a:visited, a:visited[rel=nofollow] {
+    color: inherit;
+}
+
+
+/* the articles blocks and the otherposts block look the same */
+article, .otherposts {
+    margin-top: 2em;
+    margin-bottom: 2em;
+    display:block;
+}
+
+
+/* we insert the posting date somewhere */
+
+article :first-child:before {
+    content: attr("data-posting-date")
+}
+
+
+/* headline font sizes */
+
+h1, h2 {
+    font-size: 120%;
+    break-inside: avoid;
+    break-after: avoid;
+}
+
+h1 {
+    font-weight: bold;
+}
+
+h2 {
+    font-weight: regular;
+}
+
+
+/* headlines may be links, but they ought not to be blue */
+
+h1 a:link {
+    color: inherit;
+}
+
+/* proper quotes */
+
+q { quotes: '\201c' '\201d' '\2018' '\2019' }
+q:before { content: open-quote; }
+q:after { content: close-quote; }

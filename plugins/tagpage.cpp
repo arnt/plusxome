@@ -113,11 +113,13 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	other = other.mostRecentFirst();
 
 	if ( other.empty() ) {
-	    // nothing to link to? best best remove the entire section
+	    // nothing to link to? best remove the entire section
 	    otherPosts->t = Node::Junk;
 	} else {
 	    fillInOtherPosts( otherPosts, other, sameTag );
 	}
+    } else if ( otherPosts ) {
+	otherPosts->t = Node::Junk;
     }
     return result;
 }

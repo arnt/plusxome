@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+<!-- you don't need to make this correct HTML; plusxome uses Tidy and the
+  DOM internally, and by the time this is served to clients, the DOM is
+  clean and is turned into clean HTML5.
+
+  you may comment freely and curse as much as you want: the DOM-to-HTML5
+  conversion suppresses comments. whitespace is reduced sensibly.
+-->
+
+<!-- a title, conventionally the blog's name -->
+<title>Eloquence and hypocrisy</title>
+
+<!-- tell mobile browsers that this CSS doesn't suck, and can be trusted -->
+<meta name="viewport" content="width=device-width">
+
+<!-- a style sheet -->
+<link rel=stylesheet type="text/css" href="/stylish-hypocrisy.css">
+
+<!-- how to point to a favicon -->
+<link rel=icon type="image/png" href="/shell.png">
+
+<!-- the feed plugin ought really to insert this by itself, oughtn't it? -->
+<link rel=alternate type="application/atom+xml" title="Eloquence and hypocrisy" href="/index.atom">
+
+<!-- "author home page over there". noone cares afaict. -->
+<link rel=author href="http://arnt.gulbrandsen.priv.no">
+
+<!-- this div marks the actual postings -->
+<div id="postings">
+<!--Postings are appended to the end of this div.
+    Whatever is here ends up at the start.  -->
+</div>
+
+<!-- links to other posts. you can insert other stuff before and after. if
+     plusxome doesn't find any suitable posts, it deletes the entire div. -->
+<div id="otherposts">
+<h1>Some other posts</h1>
+<ul>
+<!-- plusxome removes the LIs here and inserts some relevant ones -->
+<li>an empty UL triggers a bug, so this is just fodder
+</ul>
+</div>
