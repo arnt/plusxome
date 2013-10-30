@@ -3,8 +3,8 @@
 <html>
 <head><title>Eloquence and hypocrisy</title>
 <meta content="width=device-width" name="viewport">
-<link href="/assets/stylish-hypocrisy.css" rel="stylesheet" type="text/css">
-<link href="/assets/shell.png" rel="icon" type="image/png">
+<link href="/stylish-hypocrisy.css" rel="stylesheet" type="text/css">
+<link href="/shell.png" rel="icon" type="image/png">
 <link href="/index.atom" rel="alternate" title="Eloquence and hypocrisy" type="application/atom+xml">
 <link href="http://arnt.gulbrandsen.priv.no" rel="author">
 </head>
