@@ -17,7 +17,8 @@ public:
     string contents() const;
 
 private:
-    string c;
+    char * c;
+    int s;
 };
 
 

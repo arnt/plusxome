@@ -4,6 +4,15 @@
 
 #include "file.h"
 
+// fstat
+#include <sys/types.h>
+#include <sys/stat.h>
+// read
+#include <sys/mman.h>
+// open
+#include <fcntl.h>
+
+
 static map<string,std::shared_ptr<Asset> > assets;
 
 
@@ -17,6 +26,7 @@ static map<string,std::shared_ptr<Asset> > assets;
 */
 
 Asset::Asset( const string & path )
+    : c( 0 ), s( 0 )
 {
     assets[path] = std::shared_ptr<Asset>( this );
 }
@@ -26,7 +36,22 @@ Asset::Asset( const string & path )
 
 void Asset::reload( const string & file )
 {
-    c = File( file ).contents();
+    if ( c )
+	::munmap( c, s );
+    
+    int fd = ::open( file.c_str(), O_RDONLY );
+
+    if ( fd < 0 )
+        return;
+
+    struct stat st;
+    if ( ::fstat( fd, &st ) < 0 )
+        return;
+
+    s = st.st_size;
+    c = reinterpret_cast<char*>
+	( ::mmap( 0, s, PROT_READ, MAP_PRIVATE, fd, 0 ) );
+    ::close( fd );
 }
 
 
@@ -49,5 +74,5 @@ std::shared_ptr<Asset> Asset::find( const string & path )
 
 string Asset::contents() const
 {
-    return c;
+    return string( c, s );
 }
