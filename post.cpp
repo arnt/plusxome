@@ -38,7 +38,7 @@ const Node & Post::rootNode() const
 }
 
 
-/*! Returns a Node that's a link to this posting, 
+/*! Returns a Node that's a link to this posting,
 
 */
 
@@ -129,6 +129,17 @@ void Post::reload( const string & path )
     o.imbue( locale( o.getloc(), facet ) );
     o << posted;
     root->attributes["data-posting-date"] = o.str();
+
+    auto ff = html.find( '\f' );
+    if ( ff == string::npos ) {
+	abbrev = root;
+    } else {
+	html = html.substr( 0, ff );
+	html += " <a href=" + name.canonical() + ">More&hellip;</a>";
+	abbrev = Document( html ).getElementsByTag( "body" ).front();
+	abbrev->tagName = "article";
+	abbrev->attributes["data-posting-date"] = o.str();
+    }
 }
 
 
@@ -189,14 +200,14 @@ set<Tag *> Post::findTags() const
 void Post::setDate( const string & date )
 {
     posted = ptime(not_a_date_time);
-    
+
     istringstream is( date );
     is.imbue( locale( locale::classic(),
 		      new boost::posix_time::time_input_facet("%Y-%m-%d %H:%M:%S") ) );
     is >> posted;
     if ( posted != not_a_date_time )
 	return;
-    
+
     is.imbue( locale( locale::classic(),
 		      new boost::posix_time::time_input_facet("%Y-%m-%d") ) );
     is >> posted;
@@ -225,4 +236,16 @@ ptime Post::date() const
 Path Post::path() const
 {
     return name;
+}
+
+
+/*! Returns the root node of an abbreviated version of this Posting.
+    If the .post file contains a formfeed character,
+    abbreviatedRootNode() returns only what's before that character,
+    otherwise it returns the entire posting.
+*/
+
+const Node & Post::abbreviatedRootNode() const
+{
+    return *abbrev;
 }

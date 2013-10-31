@@ -15,6 +15,8 @@ public:
     const Node & rootNode() const;
     const Node & linkHere() const;
 
+    const Node & abbreviatedRootNode() const;
+
     static std::shared_ptr<Post> find( const string & );
     static class PostSet all();
 
@@ -33,6 +35,7 @@ public:
 private:
     Path name;
     std::shared_ptr<Node> root;
+    std::shared_ptr<Node> abbrev;
     std::shared_ptr<Node> link;
     set<string> tags;
     ptime posted;

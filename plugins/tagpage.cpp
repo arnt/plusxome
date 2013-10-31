@@ -58,7 +58,11 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
     set<std::shared_ptr<Post>> avoid;
     if ( parent ) {
 	while ( p != posts.end() ) {
-	    std::shared_ptr<Node> r( new Node( (*p)->rootNode() ) );
+	    std::shared_ptr<Node> r;
+	    if ( p == posts.begin() )
+		r = std::shared_ptr<Node>( new Node( (*p)->rootNode() ) );
+	    else
+		r = std::shared_ptr<Node>( new Node( (*p)->abbreviatedRootNode() ) );
 	    parent->children.push_back( r );
 	    avoid.insert( *p );
 	    auto tags = (*p)->findTags();
