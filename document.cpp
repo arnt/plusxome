@@ -45,7 +45,10 @@ static string fromTidyValue( TidyDoc tdoc, TidyNode tidyNode ) {
 static void getTidyAttributes( Node & node, TidyNode tidyNode ) {
     TidyAttr a = ::tidyAttrFirst( tidyNode );
     while ( a ) {
-	node.attributes[::tidyAttrName( a )] = ::tidyAttrValue( a );
+	const char * v = ::tidyAttrValue( a );
+	if ( !v )
+	    v = "";
+	node.attributes[::tidyAttrName( a )] = v;
 	a = ::tidyAttrNext( a );
     }
 }
@@ -92,6 +95,9 @@ static std::shared_ptr<Node> fromHtml( const std::string & html ) {
 
     // don't let tidy generate any meta generator tag
     ::tidyOptSetBool( tdoc, TidyMark, no );
+
+    // unicode all the time
+    ::tidyOptSetValue( tdoc, TidyCharEncoding, "utf8" );
 
     // don't let tidy report any errors (at all!)
     TidyBuffer errorBuffer;
