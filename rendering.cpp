@@ -31,7 +31,7 @@ Rendering::Rendering()
 Rendering::Rendering( Document & document )
     : tmp( "<!doctype html>\n" ),
       responseCode( document.httpResponseCode() ),
-      ctype( "text/html" )
+      ctype( "text/html; charset=utf-8" )
 {
     document.rootNode()->append( tmp );
 }
