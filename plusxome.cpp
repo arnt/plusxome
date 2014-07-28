@@ -19,6 +19,7 @@ using namespace boost::filesystem;
 
 string activePlugins;
 
+string outputdir;
 string basedir;
 string Config::postDirectory;
 string Config::assetDirectory;
@@ -50,6 +51,9 @@ int main( int argc, char ** argv ) {
 	( "asset-directory",
 	  value<string>( &Config::assetDirectory )->default_value( "assets" ),
 	  "base directory for assets (relative to base-directory)" )
+	( "output-directory",
+	  value<string>( &outputdir )->default_value( "" ),
+	  "base directory for static output (absolute" )
 	( "plugins",
 	  value<string>( &activePlugins )->default_value( "all" ),
 	  "active plugins (comma-separated, or the word all)" )
@@ -67,13 +71,6 @@ int main( int argc, char ** argv ) {
     store( parse_config_file( cfs, conf, true ), vm );
     notify( vm );
 
-    if ( ::chdir( basedir.c_str() ) ) {
-	cerr << "Plusxome: Cannot chdir( " << basedir << " )" << endl;
-	exit( 0 );
-    }
-
-    Plugin::setActivePlugins( activePlugins );
-
     if ( vm.count( "help" ) ) {
 	cout << "Plusxome serves thoughtful writings to the world." << endl
 	     << endl
@@ -82,10 +79,20 @@ int main( int argc, char ** argv ) {
 	     << "for more information." << endl;
 	exit( 0 );
     }
-
     if ( vm.count( "version" ) ) {
 	cout << "Plusxome version 0.0" << endl;
 	exit( 0 );
+    }
+
+    if ( ::chdir( basedir.c_str() ) ) {
+	cerr << "Plusxome: Cannot chdir( " << basedir << " )" << endl;
+	exit( 0 );
+    }
+
+    Plugin::setActivePlugins( activePlugins );
+
+    if ( !outputdir.empty() ) {
+
     }
 
     (void)new FileWatcher;
