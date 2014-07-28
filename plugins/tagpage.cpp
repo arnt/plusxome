@@ -152,6 +152,7 @@ void TagPage::fillInOtherPosts( std::shared_ptr<Node> otherPosts,
 	std::shared_ptr<Node> li( new Node );
 	li->tagName = "li";
 	li->t = Node::Tag;
+	li->attributes["data-posting-date"] = (*p)->postingDate();
 	ul->children.push_back( li );
 
 	// first: a link to the post, with the title

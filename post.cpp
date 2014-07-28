@@ -124,11 +124,7 @@ void Post::reload( const string & path )
     root->tagName = "article";
     link = Document( html ).getElementsByTag( "a" ).front();
 
-    ostringstream o;
-    boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
-    o.imbue( locale( o.getloc(), facet ) );
-    o << posted;
-    root->attributes["data-posting-date"] = o.str();
+    root->attributes["data-posting-date"] = postingDate();
 
     auto ff = html.find( '\f' );
     if ( ff == string::npos ) {
@@ -138,7 +134,7 @@ void Post::reload( const string & path )
 	html += " <a href=" + name.canonical() + ">More&hellip;</a>";
 	abbrev = Document( html ).getElementsByTag( "body" ).front();
 	abbrev->tagName = "article";
-	abbrev->attributes["data-posting-date"] = o.str();
+	abbrev->attributes["data-posting-date"] = postingDate();
     }
 }
 
@@ -248,4 +244,18 @@ Path Post::path() const
 const Node & Post::abbreviatedRootNode() const
 {
     return *abbrev;
+}
+
+
+/*! Returns the date on which this Post was made, in YYYY-mm-dd
+    format. For use in data-posting-date.
+*/
+
+string Post::postingDate() const
+{
+    ostringstream o;
+    boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
+    o.imbue( locale( o.getloc(), facet ) );
+    o << posted;
+    return o.str();
 }

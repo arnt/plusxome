@@ -32,6 +32,8 @@ public:
     ptime date() const;
     Path path() const;
 
+    string postingDate() const;
+
 private:
     Path name;
     std::shared_ptr<Node> root;
