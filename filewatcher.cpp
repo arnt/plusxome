@@ -49,7 +49,10 @@ void FileWatcher::addWatch( const string & path )
 				 IN_DELETE |
 				 IN_MOVED_FROM |
 				 IN_MOVED_TO );
-    watches[n] = path;
+    if(path == ".")
+	watches[n] = "";
+    else
+	watches[n] = path;
 }
 
 
@@ -67,7 +70,8 @@ void FileWatcher::scanOnce()
 	++dir;
 	if ( p[0] == '.' && p[1] == '/' )
 	    p = p.substr( 2 );
-	paths.insert( p );
+	if ( p[0] != '.' )
+	    paths.insert( p );
     }
 
     processPaths( paths );
@@ -81,7 +85,7 @@ void FileWatcher::scanOnce()
 void FileWatcher::start()
 {
     fd = ::inotify_init();
-    addWatch( Config::postDirectory );
+    addWatch( "." );
 
     scanOnce();
 
@@ -142,6 +146,8 @@ void FileWatcher::processPaths( const set<string> & paths )
 	}
 	if ( S_ISDIR( st.st_mode ) ) {
 	    addWatch( *p );
+	} else if ( p->size() > 1 && (*p)[p->size()-1] == '~') {
+	    // ignore backup files
 	} else if ( p->size() > pds + 1 + 5 &&
 	     (*p)[pds] == '/' &&
 	     p->substr(0, pds) == postdir &&
@@ -156,6 +162,13 @@ void FileWatcher::processPaths( const set<string> & paths )
 		    (*p)[ads] == '/' &&
 		    p->substr( 0, ads ) == Config::assetDirectory ) {
 	    string path = p->substr( ads );
+	    std::shared_ptr<Asset> asset = Asset::find( path );
+	    if ( asset )
+		asset->reload( *p );
+	    else
+		(new Asset( path ))->reload( *p );
+	} else if ( ads == 0 && !Template::find( *p ) ) {
+	    string path = "/" + *p;
 	    std::shared_ptr<Asset> asset = Asset::find( path );
 	    if ( asset )
 		asset->reload( *p );
