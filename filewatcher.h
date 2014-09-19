@@ -15,7 +15,7 @@ public:
     void start();
 
     void processPaths( const set<string> & );
-    
+
 private:
     void addWatch( const string & );
     void scanOnce();

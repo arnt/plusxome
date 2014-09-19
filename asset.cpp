@@ -38,7 +38,7 @@ void Asset::reload( const string & file )
 {
     if ( c )
 	::munmap( c, s );
-    
+
     int fd = ::open( file.c_str(), O_RDONLY );
 
     if ( fd < 0 )

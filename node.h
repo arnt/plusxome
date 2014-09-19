@@ -33,7 +33,7 @@ public:
 
     Type t;
     std::string tagName;
-    std::map<std::string, std::string> attributes;
+    std::map<const std::string, std::string> attributes;
 
     std::list<std::shared_ptr<Node> > children;
 

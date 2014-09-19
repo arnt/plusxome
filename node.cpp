@@ -75,7 +75,7 @@ void Node::append( string & output ) const
 	output.append( ">" );
 	appendChildren( output );
 	if ( tagName == "li" ||
-	    tagName == "meta" ||
+	     tagName == "meta" ||
 	     tagName == "link" ) {
 	    output.push_back( '\n' );
 	} else if ( tagName != "p" ) {
