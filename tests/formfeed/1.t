@@ -12,6 +12,5 @@
 <p>Second post, first paragraph. <a href="/second">More…</a></article>
 <article data-posting-date="1994-01-01">
 <h1><a href="/first">First post</a></h1>
-<p>First post, first paragraph. <a href="/first">More…</a></article>
-</div>
+<p>First post, first paragraph. <a href="/first">More…</a></article></div>
 </body></html>
