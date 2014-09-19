@@ -41,7 +41,7 @@ Document TagPage::produce( const Path & path ) const
 
 static bool byCount( Tag * t1, Tag * t2 )
 {
-    return t1->postSet().size() > t2->postSet().size();
+    return t1->postSet().size() < t2->postSet().size();
 }
 
 
@@ -66,7 +66,12 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	    parent->children.push_back( r );
 	    avoid.insert( *p );
 	    auto tags = (*p)->findTags();
-	    allTags.insert( tags.begin(), tags.end() );
+	    auto t = tags.begin();
+	    while ( t != tags.end() ) {
+		if( (*t)->regular() )
+		    allTags.insert( *t );
+		++t;
+	    }
 	    ++p;
 	}
     }
