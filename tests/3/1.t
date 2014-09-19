@@ -34,10 +34,10 @@
 <article data-posting-date="1993-06-07">
 <h1><a href="/6">Test 1</a></h1>
 <p>Foo</article></div>
-<div id="otherposts"><ul><li><a href="/7">Test 1</a>
-<li><a href="/8">Test 1</a> • <a href="/a">6 posts tagged a</a>
-<li><a href="/9">Test 1</a>
-<li><a href="/14">Test 1</a>
-<li><a href="/15">Test 1</a>
+<div id="otherposts"><ul><li data-posting-date="1992-06-07"><a href="/7">Test 1</a>
+<li data-posting-date="1991-06-07"><a href="/8">Test 1</a> • <a href="/a">6 posts tagged a</a>
+<li data-posting-date="1990-06-07"><a href="/9">Test 1</a>
+<li data-posting-date="1984-06-07"><a href="/14">Test 1</a>
+<li data-posting-date="1983-06-07"><a href="/15">Test 1</a>
 </ul></div>
 </body></html>
