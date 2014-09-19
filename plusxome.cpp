@@ -2,9 +2,14 @@
 
 #include <sysexits.h>
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "filewatcher.h"
 #include "httplistener.h"
+#include "postset.h"
 #include "plugin.h"
+#include "post.h"
 
 #include <iostream>
 #include <fstream>
@@ -51,9 +56,6 @@ int main( int argc, char ** argv ) {
 	( "asset-directory",
 	  value<string>( &Config::assetDirectory )->default_value( "assets" ),
 	  "base directory for assets (relative to base-directory)" )
-	( "output-directory",
-	  value<string>( &outputdir )->default_value( "" ),
-	  "base directory for static output (absolute" )
 	( "plugins",
 	  value<string>( &activePlugins )->default_value( "all" ),
 	  "active plugins (comma-separated, or the word all)" )
@@ -91,17 +93,13 @@ int main( int argc, char ** argv ) {
 
     Plugin::setActivePlugins( activePlugins );
 
-    if ( !outputdir.empty() ) {
-
-    }
-
     (void)new FileWatcher;
     Plugin::setupPlugins();
+
     HttpListener v6( HttpListener::V6, port );
     HttpListener v4( HttpListener::V4, port );
-    while ( v4.valid() || v6.valid() ) {
+    while ( v4.valid() || v6.valid() )
 	::sleep( 5 );
-    }
 
     return 0;
 }
