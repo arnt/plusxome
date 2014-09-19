@@ -3,6 +3,9 @@
 #include "singlepost.h"
 
 #include "template.h"
+#include "postset.h"
+#include "tagpage.h"
+
 #include <boost/program_options.hpp>
 
 static Registration<SinglePost> r( "singlepost" );
@@ -30,9 +33,9 @@ Document SinglePost::produce( const Path & path ) const
     if ( !post )
 	return Plugin::produce( path );
 
-    Document result( *t );
-    *(result.node( "posting" )) = post->rootNode();
-    return result;
+    PostSet single;
+    single.push_back(post);
+    return TagPage::produce( single, t );
 }
 
 
@@ -46,7 +49,7 @@ void SinglePost::setup()
 
 options_description * SinglePost::options()
 {
-    options_description * conf = 
+    options_description * conf =
 	new options_description( "Configuration file options for "
 				 "the singlepost plugin" );
 
