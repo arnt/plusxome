@@ -32,7 +32,7 @@ public:
     ptime date() const;
     Path path() const;
 
-    string postingDate() const;
+    const string postingDate() const;
 
 private:
     Path name;

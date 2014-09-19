@@ -148,7 +148,7 @@ void Post::setTags( const string & tagList )
 {
     tags.clear();
     set<string> v;
-    split( v, tagList, is_any_of(","), token_compress_on );
+    split( v, tagList, is_any_of(", "), token_compress_on );
     auto s = v.begin();
     while ( s != v.end() ) {
 	string t = *s;
@@ -251,7 +251,7 @@ const Node & Post::abbreviatedRootNode() const
     format. For use in data-posting-date.
 */
 
-string Post::postingDate() const
+const string Post::postingDate() const
 {
     ostringstream o;
     boost::posix_time::time_facet *facet = new time_facet("%Y-%m-%d");
