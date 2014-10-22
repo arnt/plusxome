@@ -78,7 +78,7 @@ void Node::append( string & output ) const
 	     tagName == "meta" ||
 	     tagName == "link" ) {
 	    output.push_back( '\n' );
-	} else if ( tagName != "p" ) {
+	} else if ( tagName != "p" && tagName != "br" ) {
 	    output.append( "</" );
 	    output.append( tagName );
 	    output.append( ">" );
