@@ -8,6 +8,7 @@ static Registration<TagPage> r( "tagpage" );
 
 
 static string tn;
+static int postings;
 
 
 /*! \class TagPage homepage.h
@@ -32,7 +33,7 @@ Document TagPage::produce( const Path & path ) const
     if ( !tag )
 	return Plugin::produce( path );
 
-    auto posts = tag->postSet().mostRecentFirst();
+    auto posts = tag->postSet().mostRecentFirst().section( 0, postings );
     if ( posts.empty() )
 	return Plugin::produce( path );
     return produce( posts, t );
@@ -77,7 +78,7 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
     }
 
     std::shared_ptr<Node> otherPosts = result.node( "otherposts" );
-    if ( otherPosts && !allTags.empty()) {
+    if ( otherPosts ) {
 	// sort the tags involved by number of postings, lowest first
 	vector<Tag *> tags( allTags.begin(), allTags.end() );
 	sort( tags.begin(), tags.end(), byCount );
@@ -205,7 +206,10 @@ options_description * TagPage::options()
     conf->add_options()
 	( "tag-page-template",
 	  value<string>( &tn )->default_value( "tag-page.template" ),
-	  "tag page template file name" );
+	  "tag page template file name" )
+	( "tag-page-postings",
+	  value<int>( &postings )->default_value( 4 ),
+	  "number of postings to show on a tag page" );
 
     return conf;
 }
