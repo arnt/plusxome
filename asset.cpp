@@ -3,6 +3,7 @@
 #include "asset.h"
 
 #include "file.h"
+#include "config.h"
 
 // fstat
 #include <sys/types.h>
@@ -62,8 +63,16 @@ void Asset::reload( const string & file )
 
 std::shared_ptr<Asset> Asset::find( const string & path )
 {
+    if ( assets.find( path ) == assets.end() && !path.empty() && path[0] == '/' ) {
+	struct stat st;
+	if ( ::stat( (Config::assetDirectory + path).c_str(), &st ) == 0 &&
+	     S_ISREG(st.st_mode) )
+	    (new Asset( path ))->reload( path );
+    }
+
     if ( assets.find( path ) != assets.end() )
 	return assets[path];
+
     return std::shared_ptr<Asset>( 0 );
 }
 
