@@ -80,14 +80,13 @@ void HttpServer::start()
 string HttpServer::readRequest()
 {
     // first, we read the header, one byte at a time. this is
-    // generally considered inefficient, but if we're going to spin up
-    // a JVM as a result of this request, who cares about a few hundred
-    // system calls more or less?
-    string s;
+    // generally considered inefficient, but this is a blog, not
+    // facebook.
+
+    std::string s;
 
     bool done = false;
-    int i = 0;
-    while ( i < 32768 && !done && f >= 0 ) {
+    while ( s.length() < 32768 && !done && f >= 0 ) {
 	char x[2];
 	int r = ::read( f, &x, 1 );
 	if ( r < 0 ) {
@@ -95,17 +94,16 @@ string HttpServer::readRequest()
 	    throw "Read error from client";
 	}
 
-	if ( r > 0 && x == 0 ) {
+	if ( r > 0 && x[0] == 0 ) {
 	    // some fun-loving client sent us a null byte. we have no
 	    // patience with such games.
 	    throw "Null byte from client";
 	}
 
-	x[1] = 0;
-	s += x;
-	i++;
+	s.push_back(x[0]);
 
 	// there are two ways to end a header: LFLF and CRLFCRLF
+	auto i = s.length();
 	if ( i >= 2 && s[i-1] == 10 && s[i-2] == 10 )
 	    done = true;
 	if ( i >= 3 && s[i-1] == 10 && s[i-2] == 13 && s[i-3] == 10 )
