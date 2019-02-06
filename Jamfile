@@ -11,5 +11,4 @@ Build plusxome : plusxome.cpp rendering.cpp template.cpp document.cpp
 
 Program plusxome : plusxome plugins ;
 
-LINKLIBS on plusxome = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
-
+LINKLIBS on plusxome = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy -lpthread ;

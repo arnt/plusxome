@@ -1,16 +1,16 @@
 if $(COMPILER) = "clang" {
     C++ = clang ;
-    C++FLAGS += -O0  -W -Wall -g -Wno-c++11-extensions -Wno-local-type-template-args ;
+    C++FLAGS += -O0 -std=c++11 -W -Wall -g -Wno-local-type-template-args ;
     LINK = $(C++) ;
     LINKFLAGS = -g ;
-    LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
+    LIBS = -lstdc++ -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy -lpthread ;
     BUILD = build/clang ;
 } else {
     C++ = g++ ;
-    C++FLAGS += -g -W -Wall -Wno-c++0x-compat -std=c++0x ;
+    C++FLAGS += -g -W -Wall -Wno-c++0x-compat -std=c++11 ;
     LINK = $(C++) ;
     LINKFLAGS = -g ;
-    LIBS = -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy ;
+    LIBS = -lboost_thread -lboost_filesystem -lboost_system -lboost_program_options -lboost_date_time -ltidy -lpthread ;
     BUILD = build/g++ ;
 }
 

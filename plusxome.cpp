@@ -69,7 +69,7 @@ int main( int argc, char ** argv ) {
     store( parse_command_line( argc, argv, cli ), vm );
     notify( vm );
 
-    ifstream cfs( config.c_str() );
+    std::ifstream cfs( config.c_str() );
     store( parse_config_file( cfs, conf, true ), vm );
     notify( vm );
 
