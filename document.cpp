@@ -130,7 +130,7 @@ Document::Document( const std::string & html )
 */
 
 Document::Document( const Document & other )
-    : responseCode( 200 )
+    : responseCode( other.responseCode )
 {
     *this = other;
 }
