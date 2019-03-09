@@ -119,8 +119,9 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	    }
 	    ++ri;
 	}
-	// and we want to emit them ordered by date
-	other = other.mostRecentFirst();
+	// we want to emit them ordered by date, and if there are more
+	// than five we'll take same-tagged OR unrelated, not AND.
+	other = other.mostRecentFirst().section( 0, 5 );
 
 	if ( other.empty() ) {
 	    // nothing to link to? best remove the entire section
