@@ -86,12 +86,12 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	PostSet other;
 	auto t = tags.begin();
 	while ( t != tags.end() && other.size() < 5 ) {
-	    PostSet inTag = (*t)->postSet().mostRecentFirst();
+	    PostSet inTag = (*t)->postSet().published().mostRecentFirst();
 	    auto p = inTag.begin();
 	    while ( p != inTag.end() &&
 		    ( other.contains( *p ) || posts.contains( *p ) ) )
 		++p;
-	    if ( (*p)->isPublished() && p != inTag.end() ) {
+	    if ( p != inTag.end() && (*p)->isPublished() ) {
 		other.push_back( *p );
 		sameTag.emplace(*p, *t);
 	    }
@@ -102,7 +102,7 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	// the posts from sameTag and then filling those in with
 	// recent postings until we have at least five, and at least
 	// two new ones that are not related.
-	PostSet recent = Post::all().mostRecentFirst();
+	PostSet recent = Post::all().published().mostRecentFirst();
 	auto ri = recent.begin();
 	int unrelated = 0;
 	while ( ri != recent.end() &&

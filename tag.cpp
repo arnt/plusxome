@@ -45,8 +45,9 @@ void Tag::unlearnPosts()
 }
 
 
-/*! Returns a list containing the Post objects that are tagged with this Tag,
-    or an empty list if this Tag has no name.
+/*! Returns a list containing the published Post objects that are
+    tagged with this Tag, or an empty list if this Tag has no name or
+    contains no published Posts.
 */
 
 PostSet Tag::postSet() const
@@ -57,7 +58,7 @@ PostSet Tag::postSet() const
 	auto all = Post::all();
 	auto p = all.begin();
 	while ( p != all.end() ) {
-	    if ( (*p)->tagged( n ) )
+	    if ( (*p)->tagged( n ) && (*p)->isPublished() )
 		posts.push_back( *p );
 	    ++p;
 	}
