@@ -14,6 +14,8 @@ public:
     PostSet section( int, int ) const;
 
     PostSet mostRecentFirst() const;
+
+    bool contains( const std::shared_ptr<Post> & ) const;
 };
 
 

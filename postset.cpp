@@ -75,3 +75,15 @@ PostSet PostSet::mostRecentFirst() const
     sort( r.begin(), r.end(), byDate );
     return r;
 }
+
+
+/*! Returns true if \a post is in this set. std::vector really should've done this
+*/
+
+bool PostSet::contains( const std::shared_ptr<Post> & post ) const
+{
+    for( auto p : *this )
+	if( p == post )
+	    return true;
+    return false;
+}
