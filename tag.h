@@ -22,6 +22,7 @@ public:
     bool regular() const;
 
     static void ensure( const string &, bool = true );
+    static unsigned int count();
 
 private:
     bool e;

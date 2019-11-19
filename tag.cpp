@@ -98,6 +98,14 @@ void Tag::ensure( const string & n, bool regular )
     if ( tags.find( n ) == tags.end() )
 	(void)new Tag( n, regular );
 }
+/*! Returns the total number of tags created so far.
+ */
+
+unsigned int Tag::count()
+{
+    return tags.size();
+}
+
 
 
 /*! Returns the name of this Tag, as supplied to ensure(). */
