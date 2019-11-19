@@ -19,6 +19,7 @@ public:
 private:
     void addWatch( const string & );
     void scanOnce();
+    void addImplicitTags();
 
 private:
     int fd;

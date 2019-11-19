@@ -56,7 +56,6 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
     auto p = posts.begin();
     std::shared_ptr<Node> parent = result.node( "postings" );
     set<Tag *> allTags;
-    set<std::shared_ptr<Post>> avoid;
     if ( parent ) {
 	while ( p != posts.end() ) {
 	    std::shared_ptr<Node> r;
@@ -65,7 +64,6 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	    else
 		r = std::shared_ptr<Node>( new Node( (*p)->abbreviatedRootNode() ) );
 	    parent->children.push_back( r );
-	    avoid.insert( *p );
 	    auto tags = (*p)->findTags();
 	    auto t = tags.begin();
 	    while ( t != tags.end() ) {
@@ -83,17 +81,19 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	vector<Tag *> tags( allTags.begin(), allTags.end() );
 	sort( tags.begin(), tags.end(), byCount );
 
-	// pick the most recent post in each tag until we have n
+	// pick the most recent post in each tag until we have 5
 	map< std::shared_ptr<Post>, Tag * > sameTag;
+	PostSet other;
 	auto t = tags.begin();
-	while ( t != tags.end() && sameTag.size() < 5 ) {
+	while ( t != tags.end() && other.size() < 5 ) {
 	    PostSet inTag = (*t)->postSet().mostRecentFirst();
 	    auto p = inTag.begin();
-	    while ( p != inTag.end() && avoid.find( *p ) != avoid.end() )
+	    while ( p != inTag.end() &&
+		    ( other.contains( *p ) || posts.contains( *p ) ) )
 		++p;
 	    if ( p != inTag.end() ) {
-		sameTag[*p] = *t;
-		avoid.insert( *p );
+		other.push_back( *p );
+		sameTag.emplace(*p, *t);
 	    }
 	    ++t;
 	}
@@ -102,18 +102,12 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	// the posts from sameTag and then filling those in with
 	// recent postings until we have at least five, and at least
 	// two new ones that are not related.
-	PostSet other;
-	auto mi = sameTag.begin();
-	while ( mi != sameTag.end() ) {
-	    other.push_back( mi->first );
-	    ++mi;
-	}
 	PostSet recent = Post::all().mostRecentFirst();
 	auto ri = recent.begin();
 	int unrelated = 0;
-	while ( ri != recent.end() && ( other.size() < 5 ||
-					unrelated < 2 ) ) {
-	    if ( avoid.find( *ri ) == avoid.end() ) {
+	while ( ri != recent.end() &&
+		( other.size() < 5 || unrelated < 2 ) ) {
+	    if ( !other.contains( *ri ) && !posts.contains( *ri ) ) {
 		other.push_back( *ri );
 		unrelated++;
 	    }

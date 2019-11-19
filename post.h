@@ -10,14 +10,12 @@
 
 class Post {
 public:
-    Post( const string & );
-
     const Node & rootNode() const;
     const Node & linkHere() const;
 
     const Node & abbreviatedRootNode() const;
 
-    static std::shared_ptr<Post> find( const string & );
+    static std::shared_ptr<Post> find( const Path &, bool );
     static class PostSet all();
 
     void reload( const string & );
@@ -34,11 +32,16 @@ public:
 
     const string postingDate() const;
 
+    void addImplicitTags();
+
 private:
+    Post( const Path & );
+
     Path name;
     std::shared_ptr<Node> root;
     std::shared_ptr<Node> abbrev;
     std::shared_ptr<Node> link;
+    set<string> explicitTags;
     set<string> tags;
     ptime posted;
 };

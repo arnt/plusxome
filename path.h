@@ -10,6 +10,7 @@ class Path {
 public:
     Path();
     Path( const std::string & s );
+    Path( const Path & p );
 
     std::string component( int ) const;
     int components() const;

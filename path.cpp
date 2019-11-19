@@ -43,6 +43,14 @@ Path::Path( const string & s )
 }
 
 
+/*! Constructs a copy of \a p. */
+
+Path::Path( const Path & p )
+    : parsed( p.parsed ), trailingSlash( p.trailingSlash )
+{
+}
+
+
 /*! Returns path component number \a n, or a null string if there is
     no such component (typically because n is not smaller than
     components()).

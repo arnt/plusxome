@@ -5,9 +5,11 @@
 #include "httpserver.h"
 #include "rendering.h"
 #include "template.h"
+#include "postset.h"
 #include "config.h"
 #include "asset.h"
 #include "post.h"
+#include "tag.h"
 
 #include <sys/inotify.h>
 #include <sys/ioctl.h>
@@ -134,6 +136,7 @@ void FileWatcher::processPaths( const set<string> & paths )
     string postdir = Config::postDirectory;
     unsigned int pds = postdir.size();
     unsigned int ads = Config::assetDirectory.size();
+    unsigned int tagsBefore = Tag::count();
 
     auto p = paths.begin();
     while ( p != paths.end() ) {
@@ -153,11 +156,7 @@ void FileWatcher::processPaths( const set<string> & paths )
 	     p->substr(0, pds) == postdir &&
 	     p->substr(p->size() - 5) == ".post" ) {
 	    string path = p->substr( pds + 1, p->size() - pds - 1 -5 );
-	    std::shared_ptr<Post> post = Post::find( path );
-	    if ( post )
-		post->reload( *p );
-	    else
-		(new Post( path ))->reload( *p );
+	    Post::find( Path(path), true )->reload( *p );
 	} else if ( p->size() > ads + 1 &&
 		    (*p)[ads] == '/' &&
 		    p->substr( 0, ads ) == Config::assetDirectory ) {
@@ -181,4 +180,17 @@ void FileWatcher::processPaths( const set<string> & paths )
 	}
 	++p;
     }
+    if ( tagsBefore < Tag::count() )
+	addImplicitTags();
+}
+
+
+/*! Asks each Post to add any implicit tags to its tag set, which may
+    grow as a result of a tag being created in another Post.
+*/
+
+void FileWatcher::addImplicitTags()
+{
+    for( auto p : Post::all() )
+	p->addImplicitTags();
 }

@@ -19,14 +19,9 @@ static map<string,std::shared_ptr<Post> > posts;
     The Post class models a single .post file.
 */
 
-/*! Constructs a Post for \a path and records its existence so find()
-    will find the Post.
-*/
-
-Post::Post( const string & path )
-    : name( Path( path ) )
+Post::Post( const Path & path )
+    : name( path )
 {
-    posts[name.canonical()] = std::shared_ptr<Post>( this );
 }
 
 
@@ -54,11 +49,16 @@ const Node & Post::linkHere() const
     Returns a null pointer if there is no such Post.
 */
 
-std::shared_ptr<Post> Post::find( const std::string & path )
+std::shared_ptr<Post> Post::find( const Path & requested, bool create )
 {
-    if ( posts.find( path ) != posts.end() )
-	return posts[path];
-    return std::shared_ptr<Post>( 0 );
+    auto result = posts.find( requested.canonical() );
+    if ( result != posts.end() )
+	return result->second;
+    if ( !create )
+	return std::shared_ptr<Post>( 0 );
+    auto created = std::shared_ptr<Post>(new Post( requested ) );
+    posts.emplace( requested.canonical(), created );
+    return created;
 }
 
 
@@ -131,7 +131,7 @@ void Post::reload( const string & path )
 	abbrev = root;
     } else {
 	html = html.substr( 0, ff );
-	html += " <a href=" + name.canonical() + ">More&hellip;</a>";
+	html += " <a class=readmore href=" + name.canonical() + ">[&hellip;More&hellip;]</a>";
 	abbrev = Document( html ).getElementsByTag( "body" ).front();
 	abbrev->tagName = "article";
 	abbrev->attributes["data-posting-date"] = postingDate();
@@ -146,29 +146,51 @@ void Post::reload( const string & path )
 
 void Post::setTags( const string & tagList )
 {
-    tags.clear();
-    set<string> v;
-    split( v, tagList, is_any_of(", "), token_compress_on );
-    auto s = v.begin();
-    while ( s != v.end() ) {
-	string t = *s;
-	trim( t );
+    explicitTags.clear();
+    split( explicitTags, tagList, is_any_of(", "), token_compress_on );
+    for( auto t : explicitTags )
 	Tag::ensure( t );
-	tags.insert( t );
-	++s;
-	auto s2 = s;
-	while ( s2 != v.end() ) {
-	    string t2 = *s2;
-	    trim( t2 );
-	    string ps = t + "+" + t2;
-	    Tag::ensure( ps );
-	    tags.insert( ps );
-	    ps = t2 + "+" + t;
-	    Tag::ensure( ps, false );
-	    tags.insert( ps );
-	    ++s2;
+}
+
+void Post::addImplicitTags()
+{
+    // we'll need the explicitly created tags in order to create pairs
+    tags = explicitTags;
+
+    // tags for yyyy and yyyy-mm
+    auto month = postingDate().substr( 0, 7 );
+    auto year = month.substr( 0, 4 );
+    Tag::ensure( year, false );
+    Tag::ensure( month, false );
+
+    // find and record existing tags mentioned in the path
+    int n = name.components();
+    set<string> mentioned;
+    while ( n-- > 0 ) {
+	string tmp = name.component(n);
+	split( mentioned, tmp, is_any_of("-"), token_compress_on );
+    }
+    for ( auto t : mentioned )
+	if ( Tag::find( t ) )
+	    tags.insert( t );
+
+    // tag pairs
+    set<string> pairs;
+    for ( auto t1 : tags ) {
+	for ( auto t2 : tags ) {
+	    if ( t1 != t2 ) {
+		string ps = t1 + "+" + t2;
+		Tag::ensure( ps, t1 != year && t2 != year && t1 < t2 );
+		pairs.insert( ps );
+	    }
 	}
     }
+
+    // the year, month and pairs aren't be used in pairs
+    tags.insert( year );
+    tags.insert( month );
+    for ( auto p : pairs )
+	tags.insert( p );
 }
 
 

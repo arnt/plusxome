@@ -29,7 +29,7 @@ SinglePost::SinglePost()
 
 Document SinglePost::produce( const Path & path ) const
 {
-    std::shared_ptr<Post> post = Post::find( path.canonical() );
+    std::shared_ptr<Post> post = Post::find( path, false );
     if ( !post )
 	return Plugin::produce( path );
 
