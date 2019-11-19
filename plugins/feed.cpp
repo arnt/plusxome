@@ -80,7 +80,8 @@ Rendering Feed::render( const Path & path ) const
 	"<feed xmlns=\"http://www.w3.org/2005/Atom\">\n"
 	"<title>" + title + "</title>\n"
 	"<link href=\"" + Path().absolute() + "\"/>\n"
-	"<link rel=\"self\" type=\"application/atom+xml\" href=\"" + path.absolute() + "\"/>\n\n"
+	"<link rel=\"self\" type=\"application/atom+xml\" href=\"" +
+	path.absolute() + "\"/>\n\n"
 	"<author>\n<name>" + blogger + "</name>\n";
     if ( !email.empty() )
 	result += "<email>" + email + "</email>\n";
@@ -89,10 +90,14 @@ Rendering Feed::render( const Path & path ) const
     result +=
 	"</author>\n\n";
 
-    ptime feedDate(not_a_date_time);
-
     auto posts = Post::all().published().mostRecentFirst();
     auto p = posts.begin();
+
+    result += "<updated>" + formattedTime( (*p)->date() ) + "</updated>\n"
+	      "<id>" + path.absolute() + "?" +
+	      boost::lexical_cast<string>( scalarTime( (*p)->date() ) ) +
+	      "</id>\n";
+
     int c = 0;
     while ( p != posts.end() && c < postings ) {
 	string title;
@@ -115,18 +120,11 @@ Rendering Feed::render( const Path & path ) const
 	    "<updated>" + formattedTime( (*p)->date() ) + "</updated>\n"
 	    "</entry>\n\n";
 
-	if ( feedDate == ptime(not_a_date_time) || feedDate < (*p)->date() )
-	    feedDate = (*p)->date();
-
 	++p;
 	++c;
     }
 
-    result += "<updated>" + formattedTime( feedDate ) + "</updated>\n"
-	      "<id>" + path.absolute() + "?" +
-	      boost::lexical_cast<string>( scalarTime( feedDate ) ) +
-	      "</id>\n"
-	      "</feed>\n";
+    result += "</feed>\n";
     return Rendering( result, "application/atom+xml" );
 }
 
