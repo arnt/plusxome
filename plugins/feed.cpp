@@ -17,7 +17,7 @@ static int postings;
 
     The Feed class implements Atom (actually atompub, RFC 4287). I
     suppose I will eventually implement hubbub as well, but not now.
-    
+
 */
 
 /*! Constructs a feed plugin. */
@@ -91,7 +91,7 @@ Rendering Feed::render( const Path & path ) const
 
     ptime feedDate(not_a_date_time);
 
-    auto posts = Post::all().mostRecentFirst();
+    auto posts = Post::all().published().mostRecentFirst();
     auto p = posts.begin();
     int c = 0;
     while ( p != posts.end() && c < postings ) {

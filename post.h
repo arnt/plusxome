@@ -30,6 +30,7 @@ public:
     ptime date() const;
     Path path() const;
 
+    bool isPublished() const;
     const string postingDate() const;
 
     void addImplicitTags();

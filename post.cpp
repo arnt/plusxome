@@ -281,3 +281,12 @@ const string Post::postingDate() const
     o << posted;
     return o.str();
 }
+
+
+/*! Returns true if this post has a posting date in the past and false
+    if it's still in the future.
+*/
+
+bool Post::isPublished() const {
+    return posted != not_a_date_time && posted < second_clock::universal_time();
+}

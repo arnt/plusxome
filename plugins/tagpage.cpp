@@ -91,7 +91,7 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	    while ( p != inTag.end() &&
 		    ( other.contains( *p ) || posts.contains( *p ) ) )
 		++p;
-	    if ( p != inTag.end() ) {
+	    if ( (*p)->isPublished() && p != inTag.end() ) {
 		other.push_back( *p );
 		sameTag.emplace(*p, *t);
 	    }
@@ -107,7 +107,9 @@ Document TagPage::produce( const PostSet & posts, Template * tp )
 	int unrelated = 0;
 	while ( ri != recent.end() &&
 		( other.size() < 5 || unrelated < 2 ) ) {
-	    if ( !other.contains( *ri ) && !posts.contains( *ri ) ) {
+	    if ( (*ri)->isPublished() &&
+		 !other.contains( *ri ) &&
+		 !posts.contains( *ri ) ) {
 		other.push_back( *ri );
 		unrelated++;
 	    }

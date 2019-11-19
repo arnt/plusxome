@@ -29,6 +29,7 @@ Document HomePage::produce( const Path & path ) const
 	return Plugin::produce( path );
 
     return TagPage::produce( Post::all().
+			     published().
 			     mostRecentFirst().
 			     section( 0, postings ),
 			     t );

@@ -77,6 +77,20 @@ PostSet PostSet::mostRecentFirst() const
 }
 
 
+/*! Returns a subset of this set, containing only posts with a
+ *  publication date in the past.
+*/
+
+PostSet PostSet::published() const
+{
+    PostSet r;
+    for( auto p : *this )
+	if( p->isPublished() )
+	    r.push_back( p );
+    return r;
+}
+
+
 /*! Returns true if \a post is in this set. std::vector really should've done this
 */
 
