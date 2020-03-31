@@ -11,7 +11,7 @@ static Registration<RawAsset> r( "asset" );
 
 
 /*! \class RawAsset rawasset.h
-  
+
     The RawAsset class provides access to an Asset object, without any
     modifications or filtering of any sort.
 */
