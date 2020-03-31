@@ -72,6 +72,12 @@ static string escaped( const string & text ) {
 
 Rendering Feed::render( const Path & path ) const
 {
+    if ( path.canonical() == "/index.rss" ) {
+	Document r( "<h1>Switch to atom, please</h1>\n" );
+	r.setHttpResponseCode( 301 );
+	return r;
+    }
+
     if ( path.canonical() != "/index.atom" )
 	return Plugin::render( path );
 
