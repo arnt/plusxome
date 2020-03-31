@@ -36,7 +36,7 @@ Rendering Sitemap::render( const Path & path ) const
 	"<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"\n"
         " xmlns:mobile=\"http://www.google.com/schemas/sitemap-mobile/1.0\">\n";
 
-    auto posts = Post::all();
+    auto posts = Post::all().published();
     auto p = posts.begin();
     while ( p != posts.end() ) {
 	result += ( " <url>\n"

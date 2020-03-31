@@ -57,7 +57,7 @@ Document Tagged404::produce404( const Path & path ) const
 
     if ( withMatchingTags.size() < 5 ) {
 	// if brute force doesn't work, you're not using enough of it
-	for ( auto post : Post::all() )
+	for ( auto post : Post::all().published() )
 	    for ( auto word : splitPath( post->path() ) )
 		if ( words.count( word ) )
 		    withMatchingTags.insert( post );
