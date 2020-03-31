@@ -11,9 +11,10 @@ class Rendering {
 public:
     Rendering();
     Rendering( Document & );
-    Rendering( const string &, const string & );
+    Rendering( const string &, const string &, unsigned int );
 
-    string httpResponse();
+    string httpGetResponse();
+    string httpHeadResponse();
 
     static boost::shared_mutex & lock();
 
@@ -24,6 +25,7 @@ private:
     string tmp;
     unsigned int responseCode;
     string ctype;
+    unsigned int lifetime;
 };
 
 #endif

@@ -28,7 +28,9 @@ Rendering RobotsTxt::render( const Path & path ) const
     if ( path.components() != 1 || path.component( 0 ) != "robots.txt" )
 	return Plugin::render( path );
 
-    return Rendering( "User-Agent: *\r\nAllow: /\r\n", "text/plain" );
+    return Rendering( "User-Agent: *\r\nAllow: /\r",
+		      "text/plain",
+		      365 * 86400 );
 }
 
 

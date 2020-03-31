@@ -18,7 +18,8 @@
 */
 
 Rendering::Rendering()
-    : responseCode( 200 )
+    : responseCode( 200 ),
+      lifetime( 1 )
 {
 
 }
@@ -31,19 +32,24 @@ Rendering::Rendering()
 Rendering::Rendering( Document & document )
     : tmp( "<!doctype html>\n" ),
       responseCode( document.httpResponseCode() ),
-      ctype( "text/html; charset=utf-8" )
+      ctype( "text/html; charset=utf-8" ),
+      lifetime( document.cacheLifetime() )
 {
     document.rootNode()->append( tmp );
 }
 
 
-/*! Constructs a Rendering that returns \a content with \a contentType.
+/*! Constructs a Rendering that returns \a content with \a contentType
+  and \a cacheLifetime.
 */
 
-Rendering::Rendering( const string & content, const string & contentType )
+Rendering::Rendering( const string & content,
+		      const string & contentType,
+		      unsigned int cacheLifetime )
     : tmp( content ),
       responseCode( 200 ),
-      ctype( contentType )
+      ctype( contentType ),
+      lifetime( cacheLifetime )
 {
 }
 
@@ -52,15 +58,26 @@ Rendering::Rendering( const string & content, const string & contentType )
     with "HTTP/1.1" and ending with the body.
 */
 
-string Rendering::httpResponse()
+string Rendering::httpGetResponse()
+{
+    return httpHeadResponse() + "\r\n" + tmp;
+}
+
+
+/*! Returns the HTTP HEAD response suitable for this Rendering, starting
+    with "HTTP/1.1".
+*/
+
+string Rendering::httpHeadResponse()
 {
     return "HTTP/1.1 " +
 	boost::lexical_cast<string>( responseCode ) +
 	" Have a nice day\r\n"
 	"Content-Type: " + ctype + "\r\n"
-	"Server: Plusxome/0.1 (http://rant.gulbrandsen.priv.no/plusxome)\r\n"
-	"Connection: close\r\n"
-	"\r\n" + tmp;
+	"Cache-Control: public, max-age=" +
+	boost::lexical_cast<string>( lifetime ) + "\r\n"
+	"Server: Plusxome/0.1 (https://rant.gulbrandsen.priv.no/plusxome)\r\n"
+	"Connection: close\r\n";
 }
 
 

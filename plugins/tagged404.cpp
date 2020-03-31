@@ -71,6 +71,7 @@ Document Tagged404::produce404( const Path & path ) const
 	reported.push_back( post );
     Document r( TagPage::produce( reported.mostRecentFirst().section( 0, 16 ), t ) );
     r.setHttpResponseCode( 404 );
+    r.setCacheLifetime( 404 );
     return r;
 }
 

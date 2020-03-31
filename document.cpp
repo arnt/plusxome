@@ -26,7 +26,7 @@ using namespace std;
 */
 
 Document::Document()
-    : responseCode( 200 )
+    : responseCode( 200 ), lifetime( 86400 )
 {
 
 }
@@ -120,7 +120,7 @@ static std::shared_ptr<Node> fromHtml( const std::string & html ) {
 */
 
 Document::Document( const std::string & html )
-    : root( fromHtml( html ) ), responseCode( 200 )
+    : root( fromHtml( html ) ), responseCode( 200 ), lifetime( 86400 )
 {
 }
 
@@ -130,7 +130,7 @@ Document::Document( const std::string & html )
 */
 
 Document::Document( const Document & other )
-    : responseCode( other.responseCode )
+    : responseCode( other.responseCode ), lifetime( other.lifetime )
 {
     *this = other;
 }
@@ -209,7 +209,7 @@ std::shared_ptr<Node> Document::rootNode()
     value set at construction time is 200.
 */
 
-void Document::setHttpResponseCode( int code )
+void Document::setHttpResponseCode( unsigned int code )
 {
     responseCode = code;
 }
@@ -219,9 +219,29 @@ void Document::setHttpResponseCode( int code )
     setHttpResponseCode() has not been called.
 */
 
-int Document::httpResponseCode() const
+unsigned int Document::httpResponseCode() const
 {
     return responseCode;
+}
+
+
+/*! Records that this document's HTTP cache lifetime is \a seconds. The
+    value set at construction time is 86400 (ony day).
+*/
+
+void Document::setCacheLifetime( unsigned int ttl )
+{
+    lifetime = ttl;
+}
+
+
+/*! Returns what was recorded by setCacheLifetime(), or 86400 if
+    setCacheLifetime() has not been called.
+*/
+
+unsigned int Document::cacheLifetime() const
+{
+    return lifetime;
 }
 
 

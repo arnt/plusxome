@@ -11,7 +11,7 @@
 class HttpServer
 {
 public:
-    enum Operation { Get, Invalid };
+    enum Operation { Get, Head, Invalid };
 
     HttpServer( int );
     ~HttpServer() {}
@@ -31,7 +31,7 @@ public:
     void send( string );
 
     string httpResponse( int, const string &, const string &,
-			 const string & = "" );
+                         const string & = "" );
 
     void close();
 

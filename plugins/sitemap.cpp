@@ -53,7 +53,7 @@ Rendering Sitemap::render( const Path & path ) const
 
     result += "</urlset>\n";
 
-    return Rendering( result, "application/xml" );
+    return Rendering( result, "application/xml", 7 * 86400 );
 }
 
 

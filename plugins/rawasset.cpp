@@ -32,17 +32,17 @@ RawAsset::RawAsset()
 	    int end = line.size();
 
 	    int space = 0;
-	    while ( space < end && 
+	    while ( space < end &&
 		    ( line[space] != ' ' && line[space] != '\t' ) )
 		space++;
 	    string mimetype = line.substr( 0, space );
 
 	    while ( space < end ) {
-		while ( space < end && 
+		while ( space < end &&
 			( line[space] == ' ' || line[space] == '\t' ) )
 		    space++;
 		int start = space;
-		while ( space < end && 
+		while ( space < end &&
 			( line[space] != ' ' && line[space] != '\t' ) )
 		    space++;
 		string suffix = line.substr( start, space-start );
@@ -73,7 +73,7 @@ Rendering RawAsset::render( const Path & path ) const
 	}
     }
 
-    return Rendering( a->contents(), ct );
+    return Rendering( a->contents(), ct, 42 * 86400 );
 }
 
 

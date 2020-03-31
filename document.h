@@ -21,8 +21,11 @@ public:
 
     void parse( const std::string & );
 
-    void setHttpResponseCode( int );
-    int httpResponseCode() const;
+    void setHttpResponseCode( unsigned int );
+    unsigned int httpResponseCode() const;
+
+    void setCacheLifetime( unsigned int );
+    unsigned int cacheLifetime() const;
 
     list< std::shared_ptr<Node> > getElementsByTag( const string & );
 
@@ -32,7 +35,8 @@ private:
 private:
     std::shared_ptr<Node> root;
     map<string,std::shared_ptr<Node> > ids;
-    int responseCode;
+    unsigned int responseCode;
+    unsigned int lifetime;
 };
 
 #endif

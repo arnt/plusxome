@@ -125,7 +125,7 @@ Rendering Feed::render( const Path & path ) const
     }
 
     result += "</feed>\n";
-    return Rendering( result, "application/atom+xml" );
+    return Rendering( result, "application/atom+xml", 86400 );
 }
 
 

@@ -167,6 +167,8 @@ void HttpServer::parseRequest( string h )
 
     if ( !h.compare( 0, 4, "GET " ) ) {
 	o = Get;
+    } else if ( !h.compare( 0, 5, "HEAD " ) ) {
+	o = Head;
     } else {
 	o = Invalid;
     }
@@ -209,7 +211,7 @@ void HttpServer::respond()
 	r = Plugin::first().render( p );
 	renderings[canonicalPath] = r;
     }
-    send( r.httpResponse() );
+    send( o == Get ? r.httpGetResponse() : r.httpHeadResponse() );
 }
 
 
@@ -250,7 +252,7 @@ string HttpServer::httpResponse( int numeric, const string & contentType,
 	r += boost::lexical_cast<string>( body.length() );
     }
     r += "\r\n\r\n";
-    if ( !body.empty() ) {
+    if ( o == Get && !body.empty() ) {
 	r += body;
     }
     return r;
