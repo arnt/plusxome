@@ -123,25 +123,25 @@ string HttpServer::readRequest()
 static string urldecoded( const string & escaped )
 {
     string r;
-    auto i = escaped.begin();
-    while ( i != escaped.end() ) {
-	if ( *i == '%' ) {
+    uint i = 0;
+    while ( i < escaped.length() ) {
+	if ( escaped[i] == '%' ) {
 	    ++i;
 	    bool ok = true;
 	    char buffer[3];
-	    if ( i == escaped.end() )
+	    if ( i >= escaped.length() )
 		ok = false;
 	    else
-		buffer[0] = *i++;
-	    if ( i == escaped.end() )
+		buffer[0] = escaped[i++];
+	    if ( i >= escaped.length() )
 		ok = false;
 	    else
-		buffer[1] = *i++;
+		buffer[1] = escaped[i++];
 	    buffer[2] = 0;
 	    if ( ok && isxdigit( buffer[0] ) && isxdigit( buffer[1] ) )
 		r.push_back( (unsigned char)strtol( buffer, 0, 16 ) );
 	} else {
-	    r.push_back( *i );
+	    r.push_back( escaped[i] );
 	}
 	++i;
     }
