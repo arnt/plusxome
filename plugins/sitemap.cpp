@@ -41,7 +41,7 @@ Rendering Sitemap::render( const Path & path ) const
     while ( p != posts.end() ) {
 	result += ( " <url>\n"
 		    "  <loc>" +
-		    (*p)->path().canonical() +
+		    (*p)->path().absolute() +
 		    "</loc>\n"
 		    "  <lastmod>" +
 		    to_iso_extended_string( (*p)->date().date() ) +
