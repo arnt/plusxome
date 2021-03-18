@@ -68,13 +68,20 @@ HttpListener::HttpListener( Family family, int port )
     // just go on.
     (void)::listen( f, 64 );
 
-    int t = 0;
-    while ( t < 3 ) {
-	boost::thread( *this );
-	t++;
+    std::vector<boost::thread> threads;
+
+    while( true ) {
+	auto i = threads.begin();
+	while( i != threads.end() ) {
+	    if( i->timed_join( boost::posix_time::seconds( 0 ) ) )
+		i = threads.erase( i );
+	    else
+		++i;
+	}
+	while( threads.size() < 4 )
+	    threads.push_back(boost::thread( *this ));
+	::sleep( 4 );
     }
-    // this lets the thread run unmanaged; when run() exits the object
-    // will be deallocated.
 }
 
 
@@ -84,13 +91,13 @@ HttpListener::HttpListener( Family family, int port )
 
 void HttpListener::start()
 {
-    while( f >= 0 ) {
+    while( true ) {
 	int i = ::accept( f, 0, 0 );
 	if ( i >= 0 ) {
 	    HttpServer h( i );
 	    h.start();
 	} else if ( errno != EAGAIN ) {
-	    f = -1;
+	    return;
 	}
     }
 }
