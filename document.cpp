@@ -4,7 +4,7 @@
 
 #include "tidy/tidy.h"
 #include "tidy/tidyenum.h"
-#include "tidy/buffio.h"
+#include "tidy/tidybuffio.h"
 
 #include "node.h"
 
@@ -94,7 +94,7 @@ static std::shared_ptr<Node> fromHtml( const std::string & html ) {
     TidyDoc tdoc = tidyCreate();
 
     // don't let tidy generate any meta generator tag
-    ::tidyOptSetBool( tdoc, TidyMark, no );
+    ::tidyOptSetBool( tdoc, TidyMark, (Bool)0 );
 
     // unicode all the time
     ::tidyOptSetValue( tdoc, TidyCharEncoding, "utf8" );
