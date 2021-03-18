@@ -28,7 +28,10 @@ Rendering RobotsTxt::render( const Path & path ) const
     if ( path.components() != 1 || path.component( 0 ) != "robots.txt" )
 	return Plugin::render( path );
 
-    return Rendering( "User-Agent: *\r\nAllow: /\r",
+    return Rendering( "User-Agent: *\r\n"
+		      "Allow: /\r\n"
+		      "\r\n"
+		      "Sitemap: " + Path( "/sitemap.xml" ).absolute() + "\r\n",
 		      "text/plain",
 		      365 * 86400 );
 }
