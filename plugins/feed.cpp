@@ -108,14 +108,15 @@ Rendering Feed::render( const Path & path ) const
     while ( p != posts.end() && c < postings ) {
 	string title;
 	auto a = (*p)->linkHere();
-	auto child = a.children.begin();
-	while ( child != a.children.end() ) {
-	    (*child)->append( title );
-	    ++child;
-	}
+	for ( auto child : a.children )
+	    child->append( title );
 
 	string all;
-	(*p)->rootNode().append( all );
+	auto & children = (*p)->rootNode().children;
+	auto child = children.begin();
+	++child;
+	while(child != children.end())
+	    (*child++)->append( all );
 
 	result +=
 	    "<entry>\n"
