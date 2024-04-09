@@ -30,7 +30,7 @@ private:
     bool r;
     string n;
     mutable PostSet posts;
-    mutable shared_mutex m;
+    mutable boost::shared_mutex m;
 };
 
 

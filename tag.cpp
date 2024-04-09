@@ -53,7 +53,7 @@ void Tag::unlearnPosts()
 PostSet Tag::postSet() const
 {
     if ( !l ) {
-	unique_lock<shared_mutex> lock( m );
+	boost::lock_guard<boost::shared_mutex> lock( m );
 	l = true;
 	auto all = Post::all();
 	auto p = all.begin();
