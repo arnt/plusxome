@@ -26,6 +26,7 @@ private:
     unsigned int responseCode;
     string ctype;
     unsigned int lifetime;
+    unsigned int etag;
 };
 
 #endif

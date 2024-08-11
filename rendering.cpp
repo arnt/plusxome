@@ -4,6 +4,9 @@
 
 #include <boost/thread/locks.hpp>
 
+static time_t start = 0;
+static int counter = 0;
+
 
 /*! \class Rendering rendering.h
 
@@ -19,7 +22,8 @@
 
 Rendering::Rendering()
     : responseCode( 200 ),
-      lifetime( 1 )
+      lifetime( 1 ),
+      etag( counter++ )
 {
 
 }
@@ -33,7 +37,8 @@ Rendering::Rendering( Document & document )
     : tmp( "<!doctype html>\n" ),
       responseCode( document.httpResponseCode() ),
       ctype( "text/html; charset=utf-8" ),
-      lifetime( document.cacheLifetime() )
+      lifetime( document.cacheLifetime() ),
+      etag( counter++ )
 {
     document.rootNode()->append( tmp );
 }
@@ -49,7 +54,8 @@ Rendering::Rendering( const string & content,
     : tmp( content ),
       responseCode( 200 ),
       ctype( contentType ),
-      lifetime( cacheLifetime )
+      lifetime( cacheLifetime ),
+      etag( counter++ )
 {
 }
 
@@ -70,13 +76,18 @@ string Rendering::httpGetResponse()
 
 string Rendering::httpHeadResponse()
 {
+    if ( !start )
+	start = ::time(0);
     return "HTTP/1.1 " +
 	boost::lexical_cast<string>( responseCode ) +
 	" Have a nice day\r\n"
 	"Content-Type: " + ctype + "\r\n"
 	"Content-Length: " + boost::lexical_cast<string>( tmp.size() ) + "\r\n"
+	"ETag: " + boost::lexical_cast<string>( start ) + "-" +
+	boost::lexical_cast<string>( etag ) + "\r\n"
 	"Cache-Control: public, max-age=" +
 	boost::lexical_cast<string>( lifetime ) + "\r\n"
+	"Age: 0\r\n"
 	"Server: Plusxome/0.1 (https://rant.gulbrandsen.priv.no/plusxome)\r\n"
 	"Connection: close\r\n";
 }
